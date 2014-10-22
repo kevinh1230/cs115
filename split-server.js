@@ -1,4 +1,5 @@
 var express = require('express');
+var bodyParser = require('body-parser');
 var app = express();
 
 var users = [{ FirstName: "Jesse",
@@ -11,6 +12,8 @@ var users = [{ FirstName: "Jesse",
 
 var router = express.Router();
 var usersRoute = router.route('/users');
+
+app.use(bodyParser());
 
 usersRoute.get(function(request, response) {
   response.send(users);
