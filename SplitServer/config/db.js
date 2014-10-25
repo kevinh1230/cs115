@@ -1,3 +1,3 @@
 module.exports = {
-	url : 'mongodb://<split>:<split>@ds047040.mongolab.com:47040/split'
+	url : 'mongodb://localhost:27017/split'
 }
