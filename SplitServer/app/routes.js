@@ -1,3 +1,4 @@
+
 var User		   = require('../app/models/User');
 var Bill 		   = require('../app/models/bill');
 var mongoose = require('mongoose');
@@ -80,8 +81,8 @@ module.exports = function(app, passport) {
 
 	// frontend routes =========================================================
 	// route to handle all angular requests
-	app.get('*', function(req, res) {
-		res.sendfile('./public/index.html');
+	app.get('/', function(req, res) {
+	   res.sendfile('./public/index.html');
 	});
 };
 
@@ -89,5 +90,7 @@ function isLoggedIn(req, res, next) {
 	if (req.isAuthenticated())
 		return next();
 
+
 	res.redirect('/');
-}
+};
+

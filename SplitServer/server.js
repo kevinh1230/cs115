@@ -37,6 +37,7 @@ require('./config/passport')(passport);
 require('./app/routes.js')(app,passport);
 
 
+
 // start app ===============================================
 app.listen(port);	
 console.log('Magic happens on port ' + port); 			// shoutout to the user
