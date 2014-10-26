@@ -8,7 +8,10 @@ var userSchema = mongoose.Schema({
 	firstName : {type : String},
 	lastName : {type : String},
 	email : {type : String},
-	friends : [{friend: { type: mongoose.Schema.ObjectId, ref: 'User' }}]
+	friends : [{friend: { type: mongoose.Schema.ObjectId, ref: 'User' }}],
+   friend2s : [{type: String}],
+   requests: [{type: String}],
+   requested: [{type: String}]
 })
 
 userSchema.methods.generateHash = function(password) {
