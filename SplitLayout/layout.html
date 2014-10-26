@@ -18,8 +18,8 @@
       <div class="modal-header">
         <h3 class="modal-title">Add Friend</h3>
       </div>
-      <form name = "addFriendForm">
-          <input ng-model = "user.name"class="form-control" type = "text" placeholder="Username" title=" Username" />
+        <form name = "addFriendForm" novalidate ng-submit="addFriendForm.$valid">
+          <input ng-model = "user.name" class="form-control" type = "text" placeholder="Username" title=" Username" required />
           {{ user.name }}
         </form>
         
@@ -31,7 +31,6 @@
 
       <button class="btn btn-default" ng-click="open()">Add Friend</button>
       <div>Username: {{ user.name }}</div>
-
     </div>  
 
     <div ng-controller="createBill" class = "floatright">
@@ -40,25 +39,25 @@
         <h3 class="modal-title">Create Bill</h3>
       </div>
       <div class="modal-body">
-        <form name = "createBillForm">
+        <form name = "createBillForm" >
           <fieldset class="form-group">
-            <input class="form-control" type = "text" placeholder="Title" title= "Title" />
+            <input ng-model = "bill.title"class="form-control" type = "text" placeholder="Title" title= "title" />
           </fieldset>
           <fieldset class="form-group">
-            <select  class="form-control" title="Type">
-              <option value="Select">Select a type..</option>
+            <select ng-model = "bill.type"  class="form-control" title="type" >
               <option value="Even">Even</option>
               <option value="Custom">Custom</option>
             </select>
           </fieldset>
           <fieldset class="form-group">
-            <input class="form-control" type = "text" placeholder="Splitters" title= "Splitters" />
+            <input ng-model = "bill.splitters" class="form-control" type = "text" placeholder="Splitters" title= "splitters" />
           </fieldset>
           <fieldset class="form-group">
-            <input class="form-control" type = "text" placeholder="Amount" title= "Amount" />
+              <!-- <input ng-model = "bill.amount" class="form-control" type="text"   placeholder="Amount" title= "amount" real-time-currency /> -->
+              <input ng-model = "bill.amount" class="form-control" type="text"   placeholder="Amount" title= "amount"  />
           </fieldset>
           <fieldset class="form-group">
-            <textarea class="form-control" type = "text" placeholder="Comments" title= "Comments"></textarea>
+            <textarea ng-model = "bill.comments" class="form-control" type = "text" placeholder="Comments" title= "comments"></textarea>
           </fieldset>
         </form>
       </div>
@@ -69,7 +68,9 @@
       </script>
 
       <button class="btn btn-default" ng-click="open()">Create Bill</button>
-      <div ng-show="selected">Selection from a modal: {{ selected }}</div>
+       <div>
+        Title:{{bill.title}}Type:{{bill.type}}Splitters:{{bill.splitters}}amount:{{bill.amount}}comments:{{bill.comments}}
+      </div>
     </div>
 
     <section class="tab" ng-controller = "TabController as tab" >
