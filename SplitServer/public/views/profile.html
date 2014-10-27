@@ -1,15 +1,15 @@
 <div>
     <div class="col-sm-6 jumbotron">
         <h3>Profile</h3>
-        <p>First Name: {{user.firstName}}</p>
-        <p>List Name:  {{user.lastName}}</p>
-        <p>Username:   {{user.username}}</p>
-        <p>Password:   {{user.password}}</p>
-        <p>Email:      {{user.email}}</p>
-        <p>Id:         {{user._id}}</p>
-        <p>Friends:    {{user.friend2s}}</p>
-        <p>Friend Requests:  {{user.requests}}</p>
-        <p>Requested Friend: {{user.requested}}</p>
+		<label>First Name: {{user.firstName}}</label><br/>
+		<label>List Name:  {{user.lastName}}</label><br/>
+		<label>Username:   {{user.username}}</label><br/>
+		<label>Password:   {{user.password}}</label><br/>
+		<label>Email:      {{user.email}}</label><br/>
+		<label>Id:         {{user._id}}</label><br/>
+		<label>Friends:    {{user.friend2s}}</label><br/>
+		<label>Friend Requests:  {{user.requests}}</label><br/>
+		<label>Requested Friend: {{user.requested}}</label><br/>
         <form>
             <input type="text" ng-model="aFriend" placeholder="Add Friend", require/>
             <button class="btn-default btn" ng-click="addFriend(aFriend)">Add</button>

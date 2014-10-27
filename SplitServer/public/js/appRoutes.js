@@ -5,22 +5,26 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
 		// home page
 		.when('/', {
 			templateUrl: 'views/home.html',
-			controller: 'MainController'
+			controller: 'MainController',
+			title: 'SPLIT'
 		})
 
 		.when('/signup', {
 			templateUrl: 'views/signup.html',
-			controller: 'SignupController'
+			controller: 'SignupController',
+			title: 'SIGN UP'
 		})
 
 		.when('/login', {
 			templateUrl: 'views/login.html',
-			controller: 'LoginController'
+			controller: 'LoginController',
+			title: 'LOGIN'
 		})
 
 		.when('/profile', {
 			templateUrl: 'views/profile.html',
-			controller: 'ProfileController'
+			controller: 'ProfileController',
+			title: 'PROFILE'
 		})
 
 		.when('/nerds', {
