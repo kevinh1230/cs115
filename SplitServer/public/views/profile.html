@@ -1,23 +1,29 @@
-<!doctype html>
-<html>
-<head>
-	<title>User Profile</title>
-	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
-	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
-</head>
-<body>
-<div class="container">
-<div class="col-sm-6 col-sm-offset-3">
-	<h1><span class="fa fa-sign-in"></span> Login</h1>
-
-	<!-- show any messages that come back with authentication -->
-
-	<!-- LOGIN FORM -->
-	<hr>
-
-	<p>Need an account? <a href="/signup">Signup</a></p>
-	<p>Or go <a href="/">home</a>.</p>
+<div>
+    <div class="col-sm-6 jumbotron">
+        <h3>Profile</h3>
+        <p>First Name: {{user.firstName}}</p>
+        <p>List Name:  {{user.lastName}}</p>
+        <p>Username:   {{user.username}}</p>
+        <p>Password:   {{user.password}}</p>
+        <p>Email:      {{user.email}}</p>
+        <p>Id:         {{user._id}}</p>
+        <p>Friends:    {{user.friend2s}}</p>
+        <p>Friend Requests:  {{user.requests}}</p>
+        <p>Requested Friend: {{user.requested}}</p>
+        <form>
+            <input type="text" ng-model="aFriend" placeholder="Add Friend", require/>
+            <button class="btn-default btn" ng-click="addFriend(aFriend)">Add</button>
+        </form>
+        <form>
+            <input type="text" ng-model="dFriend" placeholder="Add Friend", require/>
+            <button class="btn-default btn" ng-click="deleteFriend(dFriend)">Delete</button>
+        </form>
+        <a class="btn-default btn" href="/logout">Sign Out</a> 
+    </div>
+    <div class="col-sm-6 jumbotron">
+        <h3>Friend Request</h3>
+        <div ng-repeat="friend in user.requests">
+            <label>{{friend}}   <button ng-click="acceptFriend(friend)">Accept</button></label>
+        </div>
+    </div>
 </div>
-</div>
-</body>
-</html>

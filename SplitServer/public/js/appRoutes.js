@@ -18,10 +18,10 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
 			controller: 'LoginController'
 		})
 
-      .when('/profile', {
-         templateUrl: 'views/profile.html',
-         controller: 'ProfileContoller'
-      })
+		.when('/profile', {
+			templateUrl: 'views/profile.html',
+			controller: 'ProfileController'
+		})
 
 		.when('/nerds', {
 			templateUrl: 'views/nerd.html',

@@ -20,13 +20,14 @@ module.exports = function(app, passport) {
 		failureRedirect : '/login',
 	}));
 
-	app.get('/profile', isLoggedIn, function(req, res) {
-   	res.render('profile');
+	app.get('/user', function(req,res) {
+		res.json(req.user);
 	});
 
-   app.get('/user', function(req,res) {
-      res.json(req.user);
-   });
+
+	app.get('/auth', function (req, res) {
+		res.json(req.isAuthenticated());
+	});
 
 	app.get('/api', function(req, res) {
 		res.send('this is a test.');
@@ -137,7 +138,7 @@ module.exports = function(app, passport) {
 
 	// frontend routes =========================================================
 	// route to handle all angular requests
-	app.get('/', function(req, res) {
+	app.get('*', function(req, res) {
 	   res.sendfile('./public/index.html');
 	});
 };
