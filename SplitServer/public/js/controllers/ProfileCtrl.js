@@ -8,6 +8,14 @@ angular.module('ProfileCtrl', []).controller('ProfileController', function($scop
 			$scope.user = user;
 		});
 
+	$http.get('/getOwnedBills').success(function(bills){
+		$scope.bills = ownedBills;
+	})
+
+	$http.get('/getChargedBills').success(function(bills){
+		$scope.bills = chargedBills;
+	})
+
 	$scope.acceptFriend = function(friend) {
 		console.log(friend);
 		$http.put('/acceptFriend', {friend: friend})

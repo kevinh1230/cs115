@@ -3,7 +3,7 @@ var User		   = require('./User');
 
 var billSchema = mongoose.Schema({
 	owner : {type : String},
-	debters : [{debter: { type: mongoose.Schema.ObjectId, ref: 'User' }}],
+	debters : [{type: String}],
 	ammount : {type : Number},
 	subject : {type : String}
 })

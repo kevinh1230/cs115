@@ -9,9 +9,11 @@ var userSchema = mongoose.Schema({
 	lastName : {type : String},
 	email : {type : String},
 	friends : [{friend: { type: mongoose.Schema.ObjectId, ref: 'User' }}],
-   friend2s : [{type: String}],
-   requests: [{type: String}],
-   requested: [{type: String}]
+  friend2s : [{type: String}],
+  requests: [{type: String}],
+  requested: [{type: String}],
+  ownedBills: [{type: String}],
+  chargedBills: [{type: String}]
 })
 
 userSchema.methods.generateHash = function(password) {

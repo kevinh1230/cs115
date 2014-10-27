@@ -1,5 +1,10 @@
 angular.module('MainCtrl', []).controller('MainController', function($scope) {
 
-	$scope.tagline = 'To the moon and back!';	
+	$http.get('/auth').success(function(data){
+		if (data == false){
+			$location.url('/profile');
+		}
+	})
+	
 
 });

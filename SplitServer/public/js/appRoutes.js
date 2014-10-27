@@ -27,14 +27,15 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
 			title: 'PROFILE'
 		})
 
-		.when('/nerds', {
-			templateUrl: 'views/nerd.html',
-			controller: 'NerdController'
+		.when('/createbill', {
+			templateUrl: 'views/createbill.html',
+			controller: 'CreateBillController'	
 		})
 
-		.when('/createBill', {
-			templateUrl: 'views/createbill.html',
-			controller: 'GeekController'	
+		.when('/dashboard', {
+			templateUrl: 'views/dashboard.html',
+			controller: 'DashBoardController',
+			title: 'DASHBOARD'
 		});
 
 	$locationProvider.html5Mode(true);
