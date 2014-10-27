@@ -31,4 +31,11 @@ angular.module('ProfileCtrl', []).controller('ProfileController', function($scop
 				$scope.dFriend = '';
 			 });
 	}
+
+	$scope.logout = function() {
+		$http.get('/logout')
+			 .success(function() {
+				$location.url('/');			 
+			 });
+	}
 });
