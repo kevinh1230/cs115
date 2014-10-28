@@ -9,11 +9,11 @@ angular.module('ProfileCtrl', []).controller('ProfileController', function($scop
 		});
 
 	$http.get('/getOwnedBills').success(function(bills){
-		$scope.bills = ownedBills;
+		$scope.ownedBills = bills;
 	})
 
 	$http.get('/getChargedBills').success(function(bills){
-		$scope.bills = chargedBills;
+		$scope.chargedBills = bills;
 	})
 
 	$scope.acceptFriend = function(friend) {
