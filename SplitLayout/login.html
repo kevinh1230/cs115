@@ -1,0 +1,34 @@
+<!-- email or username
+password -->
+
+<html ng-app = "split">
+ <head>
+    <link href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="mystyle.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.js"></script>
+    <script src="https://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.11.2.js"></script>
+    <script type="text/javascript" src="layout.js"></script>
+    <title> Split Login </title>
+    <header>
+      <h1 class="text-center">Log in to Split</h1>
+    </header>
+  </head>
+
+<body>
+<center>
+<form name = "loginForm" >
+  <fieldset class="form-group">
+    <input  type = "text" placeholder="Username or Email" title= "login" />
+  </fieldset>
+  <fieldset class="form-group">
+    <input  type = "password" placeholder="Password" title= "password" />
+  </fieldset>
+  <fieldset class="form-group">
+        <input type="submit" class="btn btn-primary" value="Login" />
+        <input type="submit" class="btn btn-warning" value="Forgot login?" />
+
+  </fieldset>
+</form>
+</center>
+</body>
+</html>
