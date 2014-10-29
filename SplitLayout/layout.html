@@ -18,11 +18,14 @@
       <div class="modal-header">
         <h3 class="modal-title">Add Friend</h3>
       </div>
-        <form name = "addFriendForm" novalidate ng-submit="addFriendForm.$valid">
-          <input ng-model = "user.name" class="form-control" type = "text" placeholder="Username" title=" Username" required />
-          {{ user.name }}
-        </form>
-        
+        <div class="modal-body">
+          <form name = "addFriendForm" novalidate ng-submit="addFriendForm.$valid">
+            <fieldset class="form-group">
+              <input ng-model = "user.name" class="form-control" type = "text" placeholder="Username" title=" Username" required />
+            </fieldset>
+            {{ user.name }}
+          </form>
+        </div>        
         <div class="modal-footer">
             <button class="btn btn-primary" ng-click="ok()">OK</button>
             <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
@@ -82,8 +85,29 @@
         <li ng-class="{ active: tab.isSet(3) }" >
           <a href ng-click = "tab.setTab(3)">Bills I paid</a></li>
       </ul>
-        <div ng-show = "tab.isSet(1)">
-          <blockquote>Bills to pay</blockquote>
+        <div ng-show = "tab.isSet(1)" >
+          <div ng-controller="payBill" >
+            <script type="text/ng-template" id="payBill.html">
+              <div class="modal-header">
+                <h3 class="modal-title">Pay Bill</h3>
+              </div>
+              <div class="modal-body">
+                <form name = "payBillForm" novalidate ng-submit="payBillForm.$valid">
+                  <fieldset class="form-group">
+                  <input ng-model = "pay.status" class="form-control" type = "text" placeholder="Status" title=" status" required />
+                  </fieldset>
+                  <fieldset class="form-group">
+                  <input ng-model = "pay.method" class="form-control" type = "text" placeholder="Pay Method" title=" payMethod" required />
+                  </fieldset>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button class="btn btn-primary" ng-click="ok()">Pay Bill</button>
+                <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+              </div>
+            </script>
+          <blockquote><a href ng-click="open()">Bills to pay </a> </br> Bills to pay </br> Bills to pay</blockquote>
+          </div>
         </div>
         <div ng-show = "tab.isSet(2)">
           <blockquote>Bills I created </blockquote>

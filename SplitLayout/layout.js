@@ -91,6 +91,40 @@ app.controller('AddFriendModalInstanceCtrl', function ($scope, $modalInstance, u
   };
 });
 
+app.controller('payBill', function ($scope, $modal, $log){
+  $scope.pay = {status: "", method: ""}
+
+  $scope.open = function () {
+
+    var modalInstance = $modal.open({
+      templateUrl: 'payBill.html',
+      controller: 'payBillModalInstanceCtrl',
+      resolve: {
+        pay: function () {
+          return $scope.pay;
+        }
+      }
+    });
+
+    modalInstance.result.then(function () {
+      //$scope.user = {}; //reset form
+    }, function () {
+      $log.info('Modal dismissed at: ' + new Date());
+    });
+  };
+});
+
+app.controller('payBillModalInstanceCtrl', function ($scope, $modalInstance, pay) {
+  $scope.pay = pay;
+  $scope.ok = function () {
+    $modalInstance.close();
+  };
+
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
+});
+
 //Display value as currency - kind of buggy
 // app.directive('realTimeCurrency', function ($filter, $locale) {
 //     var decimalSep = $locale.NUMBER_FORMATS.DECIMAL_SEP;
