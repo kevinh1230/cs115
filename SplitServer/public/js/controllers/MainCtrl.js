@@ -1,7 +1,7 @@
-angular.module('MainCtrl', []).controller('MainController', function($scope) {
+angular.module('MainCtrl', []).controller('MainController', function($scope, $http, $location) {
 
 	$http.get('/auth').success(function(data){
-		if (data == false){
+		if (data == true){
 			$location.url('/profile');
 		}
 	})

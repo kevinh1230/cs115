@@ -1,5 +1,9 @@
-angular.module('SignupCtrl', []).controller('SignupController', function($scope) {
+angular.module('SignupCtrl', []).controller('SignupController', function($scope, $http, $location) {
 
-	$scope.tagline = 'The square root of life is pi!';	
+	$http.get('/auth').success(function(data){
+		if (data == true){
+			$location.url('/profile');
+		}
+	});
 
 });

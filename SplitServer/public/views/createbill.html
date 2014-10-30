@@ -4,6 +4,7 @@
 	<title>Create Bill</title>
 	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
 	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
+	<link rel="stylesheet" href="/libs/angular-tags/dist/angular-tags-0.2.10.css">
 </head>
 <body>
 <div class="container">
@@ -22,8 +23,9 @@
 		</div>
 		<div class="form-group">
 			<label>People to charge</label>
-			<input type="text" class="form-control" placeholder="Who do you want to charge?" ng-model="debters", require>
+			<input typeahead="friend for friend in friends | filter:$viewValue | limitTo:8" type="text" class="form-control" placeholder="Who do you want to charge?" ng-model="debters", require>
 		</div>
+		
 		<button class="btn-default btn" ng-click="createBill(subject, ammount, debters)">Create Bill</button>
 	</form>
 
