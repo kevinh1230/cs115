@@ -1,8 +1,4 @@
 angular.module('ProfileCtrl', []).controller('ProfileController', function($scope, $http, $location) {
-	$http.get('/auth').success(function(data) {
-		if(data == false)
-			$location.url('/login');
-		});
 
 	$http.get('/user').success(function(user) {
 			$scope.user = user;
