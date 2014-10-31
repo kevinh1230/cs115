@@ -72,6 +72,14 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
 			templateUrl: 'views/dashboard.html',
 			controller: 'DashBoardController',
 			title: 'DASHBOARD'
+		})
+		
+		.when('/404', {
+			templateUrl: 'views/404.html',
+		})
+		
+		.otherwise( {
+			redirectTo: '/404'
 		});
 
 	$locationProvider.html5Mode(true);
