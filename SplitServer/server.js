@@ -35,7 +35,7 @@ app.use(passport.session());
 
 require('./config/passport')(passport);
 require('./app/routes.js')(app,passport);
-
+app.use('/', require('./app/friendRoutes.js')());
 
 
 // start app ===============================================

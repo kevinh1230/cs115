@@ -1,18 +1,27 @@
 angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
 	
 	// Rediect to profile page if user is already autheniticated
-	this.isAuth = function($q, $http, $location) {
+	this.isAuth = function(route, redirect) {
+		return function($q, $http, $location) {
+		var defer = $q.defer();
+		var redirectOnAuth = function(re) {
+			if (re) {
+				defer.resolve();
+			} else {
+				defer.reject();
+				$location.url(route);
+			}
+		
+		}
 		$http.get('/auth').success(function(data) {
 			if (data) {
-				$location.url('/profile');
-				return $q.reject();
+				redirectOnAuth(!redirect);
 			} else {
-				if($location.url() == '/profile') {
-					$location.url('/login');
-					return $q.reject();
-				}
+				redirectOnAuth(redirect);
 			}
 		});
+		return defer.promise;
+		}
 	}
 
 /*	this.isAuth = function($q, $http) {
@@ -32,7 +41,7 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
 			controller: 'MainController',
 			title: 'SPLIT',
 			resolve: {
-				auth: isAuth
+				auth: isAuth('/profile', true)
 			}
 		})
 
@@ -41,7 +50,7 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
 			controller: 'SignupController',
 			title: 'SIGN UP',
 			resolve: {
-				auth: isAuth
+				auth: isAuth('/profile', true)
 			}
 		})
 
@@ -50,7 +59,7 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
 			controller: 'LoginController',
 			title: 'LOGIN',
 			resolve:  {
-				auth: isAuth
+				auth: isAuth('/profile', true)
 			}
 		})
 
@@ -59,7 +68,7 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
 			controller: 'ProfileController',
 			title: 'PROFILE',
 			resolve: {
-				auth: isAuth
+				auth: isAuth('/login', false)
 			}
 		})
 

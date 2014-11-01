@@ -2,6 +2,7 @@ angular.module('ProfileCtrl', []).controller('ProfileController', function($scop
 
 	$http.get('/user').success(function(user) {
 			$scope.user = user;
+			console.log(user);
 		});
 
 	$http.get('/getOwnedBills').success(function(bills){
@@ -21,7 +22,7 @@ angular.module('ProfileCtrl', []).controller('ProfileController', function($scop
 	}
 
 	$scope.addFriend = function(friend) {
-		$http.post('/addFriend2', { friend: friend })
+		$http.post('/addFriend', { friend: friend })
 			 .success(function(user) {
 				$scope.user = user;
 				$scope.aFriend = '';

@@ -1,6 +1,9 @@
 var User = require('../app/models/User');
 var Bill = require('../app/models/Bill');
 var mongoose = require('mongoose');
+var query = [{ path: 'friends', select: 'username' }, 
+			 { path: 'requests', select: 'username' },
+			 { path: 'requested', select: 'username' }];
 
 module.exports = function (app, passport) {
     // server routes ===========================================================
@@ -20,7 +23,9 @@ module.exports = function (app, passport) {
     }));
 
     app.get('/user', function (request, response) {
-        response.json(request.user);
+		request.user.populate( query, function(err, user) {
+			response.json(user);
+		});
     });
 
 
@@ -36,81 +41,6 @@ module.exports = function (app, passport) {
         request.logout();
         response.redirect('/');
     });
-
-    // Friend List REST API
-    app.put('/acceptFriend', function (request, response) {
-        User.findOne({
-            username: request.body.friend
-        }, function (error, friend) {
-            if (error) {
-                console.log(error);
-                return;
-            }
-            if (!friend) {
-                console.log('User not found');
-                return;
-            }
-            request.user.friend2s.push(friend.username);
-            request.user.requests.remove(friend.username);
-            request.user.save();
-            friend.friend2s.push(request.user.username);
-            friend.requested.remove(request.user.username);
-            friend.save();
-            response.json(request.user);
-            console.log(request.user.username + ' accepted ' + friend.username);
-        });
-    });
-
-    app.post('/addFriend2', function (request, response) {
-        User.findOne({
-            username: request.body.friend
-        }, function (error, friend) {
-            if (error) {
-                console.log(error);
-                return;
-            }
-            if (!friend) {
-                console.log('User not found');
-                return;
-            }
-            if (request.user.username === friend.username) {
-                console.log('Go out and make some friends');
-                return;
-            }
-            if (request.user.friend2s.indexOf(friend.username) != -1) {
-                console.log('User is aready your friend');
-                return;
-            }
-            request.user.requested.push(friend.username);
-            request.user.save();
-            friend.requests.push(request.user.username);
-            friend.save();
-            response.json(request.user);
-            console.log(request.user.username + ' sent a friend request to ' + friend.username);
-        });
-    });
-
-    app.delete('/deleteFriend/:friend', function (request, response) {
-        User.findOne({
-            username: request.params.friend
-        }, function (error, friend) {
-            if (error) {
-                console.log(error);
-                return;
-            }
-            if (!friend) {
-                console.log('User not found');
-                return;
-            }
-            request.user.friend2s.remove(friend.username);
-            request.user.save();
-            friend.friend2s.remove(request.user.username);
-            friend.save();
-            response.json(request.user);
-            console.log(request.user.username + ' deleted ' + friend.username);
-        });
-    });
-
 
 
     // Routes for bills ======================================================
