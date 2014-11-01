@@ -4,6 +4,9 @@ var mongoose = require('mongoose');
 var query = [{ path: 'friends', select: 'username' }, 
 			 { path: 'requests', select: 'username' },
 			 { path: 'requested', select: 'username' }];
+var billQuery = [{ path: 'paid', select: 'username'},
+				 { path: 'unpaid', select: 'username'},
+				 { path: 'owner', select: 'username'}];
 
 module.exports = function (app, passport) {
     // server routes ===========================================================
@@ -45,67 +48,68 @@ module.exports = function (app, passport) {
 
     // Routes for bills ======================================================
     app.get('/getOwnedBills', isLoggedIn, function (request, response) {
-        Bill.find({
-            owner: request.user._id
-        }, function (error, bills) {
-            if (error) {
-                console.log(error);
-                return;
-            }
-            response.send(bills);
-        });
+        Bill.find({ owner: request.user._id })
+			.populate(billQuery)
+		    .exec(function(error, bills) {
+				console.log(bills);
+				response.send(bills);
+			});
+
     });
 
     app.get('/getChargedBills', isLoggedIn, function (request, response) {
         var chargedBills = request.user.chargedBills;
-        Bill.find({
-            debters: {$in : [request.user.username]}
-        }, function (error, bills) {
-            if (error) {
-                console.log(error);
-                return;
-            }
-            console.log(bills);
-            response.send(bills);
-        });
+        Bill.find({ debters: {$in : [request.user.username]} })
+		    .populate(billQuery)
+		    .exec(function(error, bills) {
+				console.log(bills);
+				response.send(bills);
+			});
     });
 
     app.post('/createbill', isLoggedIn, function (request, response) {
         var newbill = new Bill();
-        //var a = JSON.parse(debters);
-        newbill.owner = request.user._id;;
+        newbill.owner = request.user;
         newbill.ammount = request.body.ammount;
         newbill.subject = request.body.subject;
         newbill._id = mongoose.Types.ObjectId();
-        // for (var debter in a) {
-        //  console.log(a[debter]);
-        //  newbill.debters.push(mongoose.Types.ObjectId(a[debter]));
-        // }
-        newbill.debters.push(request.body.debters);
-
-        newbill.save(function (err) {
-            if (err) {
-                console.log('Error in Saving bill: ' + request.user._id + " " + err);
-                throw err;
-            }
-            User.findOne({
+        newbill.debters.push(request.body.debters.username);
+		
+		User.findOne(request.body.debters, function(error, debter) {
+			newbill.unpaid.addToSet(debter);
+			newbill.save();
+			console.log(newbill);
+			User.findOne({
                 _id: request.user._id
             }, function (error, user) {
-                if (err) console.log('Error in Saving bill: ' + request.user._id + " " + err);
+                if (error) console.log('Error in Saving bill: ' + request.user._id + " " + err);
                 user.ownedBills.push(newbill._id);
                 user.save();
             });
 
             User.findOne({
-                username: request.body.debters
+                username: request.body.debters.username
             }, function (error, user) {
-                if (err) console.log('Error in Saving bill: ' + request.user._id + " " + err);
+                if (error) console.log('Error in Saving bill: ' + request.user._id + " " + err);
                 user.chargedBills.push(newbill._id);
                 user.save();
-            });
-            response.send(newbill);
-        });
+			});
+
+			response.send(newbill);
+		});
     });
+
+
+	app.put('/payBill', isLoggedIn, function (request, response) {
+		Bill.findById(request.body.bill._id, function(error, bill) {
+			bill.unpaid.remove(request.user);
+			bill.paid.addToSet(request.user);
+			bill.save();
+		}).populate(billQuery).exec(function (error, bill) {
+			response.send(bill);
+		});
+		return;
+	});
 
     // frontend routes =========================================================
     // route to handle all angular requests

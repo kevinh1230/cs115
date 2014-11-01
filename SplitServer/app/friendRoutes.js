@@ -8,6 +8,7 @@ var query = [{ path: 'friends', select: 'username' },
 module.exports = function () {
     // Friend List REST API
     router.put('/acceptFriend', function (request, response) {
+		console.log(request.body.friend);
 		User.findOne(request.body.friend, function (error, friend) {
 			if (error) {
 				console.log(error);

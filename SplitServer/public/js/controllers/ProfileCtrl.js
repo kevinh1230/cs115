@@ -3,6 +3,7 @@ angular.module('ProfileCtrl', []).controller('ProfileController', function($scop
 	$http.get('/user').success(function(user) {
 			$scope.user = user;
 			console.log(user);
+            console.log(JSON.stringify(user.friends));
 		});
 
 	$http.get('/getOwnedBills').success(function(bills){
@@ -10,7 +11,8 @@ angular.module('ProfileCtrl', []).controller('ProfileController', function($scop
 	})
 
 	$http.get('/getChargedBills').success(function(bills){
-		$scope.chargedBills = bills;
+		console.log(bills);
+        $scope.chargedBills = bills;
 	})
 
 	$scope.acceptFriend = function(friend) {
@@ -43,4 +45,12 @@ angular.module('ProfileCtrl', []).controller('ProfileController', function($scop
 				$location.url('/');			 
 			 });
 	}
+
+    $scope.payBill = function(bill) {
+        console.log(bill);
+        $http.put('/payBill', { bill: bill })
+             .success(function(bills) {
+                $scope.chargedBills = bill;
+             });
+    }
 });

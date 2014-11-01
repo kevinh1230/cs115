@@ -7,9 +7,12 @@
 		<label>Password:   {{user.password}}</label><br/>
 		<label>Email:      {{user.email}}</label><br/>
 		<label>Id:         {{user._id}}</label><br/>
-		<label>Friends:    {{user.friends}}</label><br/>
-		<label>Friend Requests:  {{user.requests}}</label><br/>
-		<label>Requested Friend: {{user.requested}}</label><br/>
+        <label>Friends:    </label>
+        <label ng-repeat="friend in user.friends"> "{{friend.username}}"&nbsp;</label><br/>
+        <label>Friend Requests:  </label>
+        <label ng-repeat="friend in user.requests"> "{{friend.username}}"&nbsp;</label><br/>
+        <label>Requested Friend: </label>
+        <label ng-repeat="friend in user.requested"> "{{friend.username}}"&nbsp;</label><br/>
         <form>
             <input type="text" ng-model="aFriend" placeholder="Add Friend", require/>
             <button class="btn-default btn" ng-click="addFriend(aFriend)">Add</button>
@@ -26,19 +29,29 @@
     <div class="col-sm-6 jumbotron">
         <h3>Friend Request</h3>
         <div ng-repeat="friend in user.requests">
-            <label>{{friend}}   <button ng-click="acceptFriend(friend)">Accept</button></label>
+            <label>{{friend.username}}   <button ng-click="acceptFriend(friend)">Accept</button></label>
         </div> <br>
         <h3>Bills Owned</h3>
         <div ng-repeat="bill in ownedBills">
             <label>Subject: {{bill.subject}}</label><br/>
             <label>Ammount: {{bill.ammount}}</label><br/>
             <label>Debters: {{bill.debters}}</label><br/>
+            <label>Unpaid:  </label>
+            <label ng-repeat="friend in bill.unpaid">"{{friend.username}}"&nbsp;</label><br/>
+            <label>Paid:    </label>
+            <label ng-repeat="friend in bill.paid">"{{friend.username}}"&nbsp;</label><br/>
         </div><br>
         <h3>Bills Charged</h3>
         <div ng-repeat="bill in chargedBills">
             <label>Subject: {{bill.subject}}</label><br/>
-            <label>Ammount: {{bill.ammount}}</label><br/>
+            <label>Amount: {{bill.ammount}}</label><br/>
+            <label>Creator: {{bill.owner.username}}</label><br/>
             <label>Debters: {{bill.debters}}</label><br/>
+            <label>Unpaid:  </label>
+            <label ng-repeat="friend in bill.unpaid">"{{friend.username}}"&nbsp;</label><br/>
+            <label>Paid:    </label>
+            <label ng-repeat="friend in bill.paid">"{{friend.username}}"&nbsp;</label><br/>
+            <button ng-click="payBill(bill)">Pay</button>
         </div>
 
     </div>
