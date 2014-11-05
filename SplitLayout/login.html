@@ -25,9 +25,52 @@ password -->
   </fieldset>
   <fieldset class="form-group">
         <input type="submit" class="btn btn-primary" value="Login" />
-        <input type="submit" class="btn btn-warning" value="Forgot login?" />
-
+        <!--<input type="submit" class="btn btn-warning" value="Forgot login?" /> -->
+<span ng-controller="ForgotLogin">
+      <script type="text/ng-template" id="ForgotLogin.html">
+      <div class="modal-header">
+        <h3 class="modal-title">Forgot Login?</h3>
+      </div>
+        <div class="modal-body">
+          <form name = "ForgotLogin" novalidate>
+            <fieldset class="form-group">
+              <input ng-model = "flogin.email" class="form-control" type = "text" placeholder="email" title=" email" required />
+            </fieldset>
+            {{ user.name }}
+          </form>
+        </div>        
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="ok()">OK</button>
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+        </div>
+      </script>
+      	<button class="btn btn-warning" ng-click="open()">Forgot Login?</button>
+    </span>  
   </fieldset>
+
+<!--<div ng-controller="ForgotLogin">
+      <script type="text/ng-template" id="ForgotLogin.html">
+      <div class="modal-header">
+        <h3 class="modal-title">Forgot Login?</h3>
+      </div>
+        <div class="modal-body">
+          <form name = "ForgotLogin" novalidate>
+            <fieldset class="form-group">
+              <input ng-model = "flogin.email" class="form-control" type = "text" placeholder="email" title=" email" required />
+            </fieldset>
+            {{ user.name }}
+          </form>
+        </div>        
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="ok()">OK</button>
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+        </div>
+      </script>
+
+      <button class="btn btn-default" ng-click="open()">Add Friend</button>
+
+    </div>  -->
+
 </form>
 </center>
 </body>

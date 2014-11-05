@@ -45,6 +45,7 @@
 
   app.controller('ModalInstanceCtrl', function ($scope, $modalInstance,bill) {
     $scope.bill = bill;
+    $scope.bill = null;
     $scope.ok = function () {
       $modalInstance.close();
     };
@@ -82,6 +83,7 @@
 
 app.controller('AddFriendModalInstanceCtrl', function ($scope, $modalInstance, user) {
   $scope.user = user;
+  $scope.user = null;
   $scope.ok = function () {
     $modalInstance.close();
   };
@@ -116,6 +118,7 @@ app.controller('payBill', function ($scope, $modal, $log){
 
 app.controller('payBillModalInstanceCtrl', function ($scope, $modalInstance, pay) {
   $scope.pay = pay;
+  $scope.pay = null;
   $scope.ok = function () {
     $modalInstance.close();
   };
@@ -124,6 +127,43 @@ app.controller('payBillModalInstanceCtrl', function ($scope, $modalInstance, pay
     $modalInstance.dismiss('cancel');
   };
 });
+//-----------------------------------------------------------------------------------------------
+app.controller('ForgotLogin', function ($scope, $modal, $log){
+  $scope.flogin = {email: ""}
+
+  $scope.open = function () {
+
+    var modalInstance = $modal.open({
+      templateUrl: 'ForgotLogin.html',
+      controller: 'ForgotLoginModalInstanceCtrl',
+      resolve: {
+        flogin: function () {
+          return $scope.flogin;
+        }
+      }
+    });
+
+    modalInstance.result.then(function () {
+      //$scope.user = {}; //reset form
+    }, function () {
+      $log.info('Modal dismissed at: ' + new Date());
+    });
+  };
+});
+
+app.controller('ForgotLoginModalInstanceCtrl', function ($scope, $modalInstance, flogin) {
+  $scope.flogin = flogin;
+  $scope.flogin = null;
+  $scope.ok = function () {
+    alert("An email has been sent to the provided email address");
+    $modalInstance.close();
+  };
+
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
+});
+//-----------------------------------------------------------------------------------------------
 
 //Display value as currency - kind of buggy
 // app.directive('realTimeCurrency', function ($filter, $locale) {
