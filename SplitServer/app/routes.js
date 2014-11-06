@@ -105,10 +105,8 @@ module.exports = function (app, passport) {
 			bill.unpaid.remove(request.user);
 			bill.paid.addToSet(request.user);
 			bill.save();
-		}).populate(billQuery).exec(function (error, bill) {
-			response.send(bill);
+            response.send(200);
 		});
-		return;
 	});
 
     // frontend routes =========================================================

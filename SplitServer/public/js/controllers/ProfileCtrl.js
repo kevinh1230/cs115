@@ -11,7 +11,8 @@ angular.module('ProfileCtrl', []).controller('ProfileController', function($scop
 	})
 
 	$http.get('/getChargedBills').success(function(bills){
-		console.log(bills);
+		console.log('Get Charged Bills');
+        console.log(bills);
         $scope.chargedBills = bills;
 	})
 
@@ -47,10 +48,14 @@ angular.module('ProfileCtrl', []).controller('ProfileController', function($scop
 	}
 
     $scope.payBill = function(bill) {
-        console.log(bill);
         $http.put('/payBill', { bill: bill })
-             .success(function(bills) {
-                $scope.chargedBills = bill;
+             .success(function(response) {
+                 if (response)
+                 	$http.get('/getChargedBills').success(function(bills){
+                        $scope.chargedBills = bills;
+	                });
+                else 
+                 console.log('Fail to get bills');
              });
     }
 });

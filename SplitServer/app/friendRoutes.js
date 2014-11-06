@@ -1,22 +1,21 @@
 var User     = require('../app/models/User');
 var router   = require('express').Router();
 var mongoose = require('mongoose');
-var query = [{ path: 'friends', select: 'username' }, 
-			 { path: 'requests', select: 'username' },
-			 { path: 'requested', select: 'username' }];
+var query    = [{ path: 'friends', select: 'username' }, 
+                { path: 'requests', select: 'username' },
+                { path: 'requested', select: 'username' }];
 
 module.exports = function () {
     // Friend List REST API
     router.put('/acceptFriend', function (request, response) {
-		console.log(request.body.friend);
 		User.findOne(request.body.friend, function (error, friend) {
 			if (error) {
 				console.log(error);
-				return;
+				response.send('400');
 			}
 			if (!friend) {
 				console.log('User not found');
-				return;
+				response.send('400');
 			}
 
 			request.user.requests.remove(friend);
@@ -26,7 +25,7 @@ module.exports = function () {
 			friend.friends.addToSet(request.user);
 			friend.save();
 			
-			request.user.populate( query, function(err, user) {
+			request.user.populate( query, function (error, user) {
 				response.json(user);
 			});
 			console.log(request.user.username + ' accepted ' + friend.username);
@@ -59,7 +58,7 @@ module.exports = function () {
 			friend.requests.addToSet(request.user);
 			friend.save();
 			
-			request.user.populate( query, function(err, user) {
+			request.user.populate( query, function (error, user) {
 				response.json(user);
 			});
 			console.log(request.user.username + ' sent a friend request to ' + friend.username);
@@ -84,7 +83,7 @@ module.exports = function () {
             friend.friends.remove(request.user);
             friend.save();
             
-			request.user.populate( query, function(err, user) {
+			request.user.populate( query, function (error, user) {
 				response.json(user);
 			});
             console.log(request.user.username + ' deleted ' + friend.username);
