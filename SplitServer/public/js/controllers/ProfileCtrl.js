@@ -71,16 +71,16 @@ app.controller('ProfileController', function ($scope, $http, $location) {
     }
 });
 
-app.controller('createBill', function ($scope, $modal, $log) {
-    $scope.bill = {title: "",
-      type: "",
-      splitters:"",
-      amount:"",
-      comments:"",
+  app.controller('createBill', function ($scope, $modal, $log) {
+    $scope.bill = {subject: "",
+      amount: "",
+      debters:"",
      }
 
 
   $scope.openCreateBill = function (size) {
+
+    console.log("open");
 
     var modalInstance = $modal.open({
       templateUrl: 'createBill.html',
@@ -94,18 +94,38 @@ app.controller('createBill', function ($scope, $modal, $log) {
     });
 
    modalInstance.result.then(function () {
-       //$scope.bill = bill;
     }, function () {
       $log.info('ModalInstanceCtrl dismissed at: ' + new Date() + "create");
     });
   };
   });
 
-  app.controller('ModalInstanceCtrl', function ($scope, $modalInstance,bill) {
+  app.controller('ModalInstanceCtrl', function ($scope, $modalInstance,bill ,$http, $location) {
     $scope.bill = bill;
-    $scope.ok = function () {
-      $modalInstance.close();
-    };
+
+    $http.get('/auth').success(function(data) {
+      if(data == false)
+        $location.url('/');
+      });
+  
+    $scope.debterList = [];
+  
+    $http.get('/user').success(function(user) {
+        $scope.user = user;
+        $scope.friends = user.friends;
+        console.log($scope.friends);
+      });
+
+    $scope.createBill = function(subject, ammount, debters) {
+    console.log('create')
+    console.log(debters);
+    $http.post('/createbill', {subject : subject, ammount : ammount, debters : debters})
+      .success(function(data) {
+        $location.url('/profile');
+       });
+    $modalInstance.close();
+  }
+
     $scope.cancel = function () {
       $modalInstance.dismiss('cancel');
     };
@@ -174,7 +194,6 @@ app.controller('createBill', function ($scope, $modal, $log) {
 
   app.controller('AddFriendModalInstanceCtrl', function ($scope, $modalInstance, user,$http) {
     $scope.user = user;
-    console.log("hi")
     $scope.addFriend = function ( friend ) {
       $http.post('/addFriend', { friend: friend })
        .success(function(user) {
