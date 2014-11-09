@@ -212,3 +212,34 @@ app.controller('ProfileController', function ($scope, $http, $location) {
     };
   });
  
+app.controller('ownedBills', function ($scope, $modal, $log){
+
+    $scope.openOwnedBill = function (bill) {
+
+      var modalInstance = $modal.open({
+        templateUrl: 'ownedBills.html',
+        controller: 'ownedBillsModalInstanceCtrl',
+        resolve: { 
+          bill: function() {
+            return bill;
+          }
+        }
+      });
+
+      modalInstance.result.then(function () {
+      }, function () {
+        $log.info('Modal dismissed at: ' + new Date());
+      });
+    };
+  });
+
+  app.controller('ownedBillsModalInstanceCtrl', function ($scope, $modalInstance,bill) {
+    $scope.bill = bill;
+    $scope.ok = function () {
+      $modalInstance.close();
+    };
+
+    $scope.cancel = function () {
+      $modalInstance.dismiss('cancel');
+    };
+  });
