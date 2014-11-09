@@ -80,7 +80,7 @@ app.controller('createBill', function ($scope, $modal, $log) {
      }
 
 
-  $scope.open = function (size) {
+  $scope.openCreateBill = function (size) {
 
     var modalInstance = $modal.open({
       templateUrl: 'createBill.html',
@@ -114,7 +114,7 @@ app.controller('createBill', function ($scope, $modal, $log) {
   app.controller('payBill', function ($scope, $modal, $log){
     $scope.pay = {status: "", method: ""}
 
-    $scope.open = function () {
+    $scope.openPayBill = function () {
 
       var modalInstance = $modal.open({
         templateUrl: 'payBill.html',
@@ -147,9 +147,9 @@ app.controller('createBill', function ($scope, $modal, $log) {
 
   app.controller('addFriend', function ($scope, $modal, $log) {
 
-    $scope.user = {name: ""}
+    $scope.user = {name: "",friend:""}
 
-    $scope.open = function () {
+    $scope.openAddFriend = function () {
 
       var modalInstance = $modal.open({
         templateUrl: 'addFriend.html',
@@ -172,9 +172,15 @@ app.controller('createBill', function ($scope, $modal, $log) {
 // Please note that $modalInstance represents a modal window (instance) dependency.
 // It is not the same as the $modal service used above.
 
-  app.controller('AddFriendModalInstanceCtrl', function ($scope, $modalInstance, user) {
+  app.controller('AddFriendModalInstanceCtrl', function ($scope, $modalInstance, user,$http) {
     $scope.user = user;
-    $scope.ok = function () {
+    console.log("hi")
+    $scope.addFriend = function ( friend ) {
+      $http.post('/addFriend', { friend: friend })
+       .success(function(user) {
+        $scope.user = user;
+        $scope.aFriend = '';
+       });
       $modalInstance.close();
     };
 
