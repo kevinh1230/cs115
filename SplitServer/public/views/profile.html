@@ -56,3 +56,134 @@
 
     </div>
 </div>
+
+<html>
+    <body class="list-group" >
+      <div ng-controller="addFriend" class = "floatright">
+        <script type="text/ng-template" id="addFriend.html">
+        <div class="modal-header">
+          <h3 class="modal-title">Add Friend</h3>
+        </div>
+          <div class="modal-body">
+            <form name = "addFriendForm" novalidate ng-submit="addFriendForm.$valid">
+              <fieldset class="form-group">
+                <input ng-model = "user.name" class="form-control" type = "text" placeholder="Username" title=" Username" required />
+              </fieldset>
+            </form>
+          </div>        
+          <div class="modal-footer">
+              <button class="btn btn-primary" ng-click="ok()">OK</button>
+              <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+          </div>
+        </script>
+
+        <button class="btn btn-default" ng-click="open()">Add Friend</button>
+        <!--<div>Username: {{ user.name }}</div>-->
+      </div> 
+
+    <div ng-controller="createBill" class = "floatright">
+      <script type="text/ng-template" id="createBill.html">
+      <div class="modal-header">
+        <h3 class="modal-title">Create Bill</h3>
+      </div>
+      <div class="modal-body">
+        <form name = "createBillForm" >
+          <fieldset class="form-group">
+            <input ng-model = "bill.title"class="form-control" type = "text" placeholder="Title" title= "title" />
+          </fieldset>
+          <fieldset class="form-group">
+            <select ng-model = "bill.type"  class="form-control" title="type" >
+              <option value="Even">Even</option>
+              <option value="Custom">Custom</option>
+            </select>
+          </fieldset>
+          <fieldset class="form-group">
+            <input ng-model = "bill.splitters" class="form-control" type = "text" placeholder="Splitters" title= "splitters" />
+          </fieldset>
+          <fieldset class="form-group">
+              <input ng-model = "bill.amount" class="form-control" type="text"   placeholder="Amount" title= "amount"  />
+          </fieldset>
+          <fieldset class="form-group">
+            <textarea ng-model = "bill.comments" class="form-control" type = "text" placeholder="Comments" title= "comments"></textarea>
+          </fieldset>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok()">Create Bill</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+      </div>
+      </script>
+
+      <button class="btn btn-default" ng-click="open()">Create Bill</button>
+       <div>
+        <!--Title:{{bill.title}}Type:{{bill.type}}Splitters:{{bill.splitters}}amount:{{bill.amount}}comments:{{bill.comments}} -->
+      </div>
+    </div>
+
+    <section class="tab" ng-controller = "ProfileController as tab" >
+      <ul class="nav nav-pills" >
+        <li ng-class="{ active: tab.isSet(1) }" >
+          <a href ng-click = "tab.setTab(1)">Bills to pay</a></li>
+        <li ng-class="{ active: tab.isSet(2) }" >
+          <a href ng-click = "tab.setTab(2)">Bills I created</a></li>
+        <li ng-class="{ active: tab.isSet(3) }" >
+          <a href ng-click = "tab.setTab(3)">Bills I paid</a></li>
+      </ul>
+      <div ng-show = "tab.isSet(1)">
+        <div ng-controller="payBill">
+        <blockquote >
+        <div ng-repeat = "bill in chargedBills">
+           <script type="text/ng-template" id="payBill.html">
+            <div class="modal-header">
+              <h3 class="modal-title">Pay Bill</h3>
+            </div>
+            <div class="modal-body">
+
+              <label>Amount: {{bill.ammount}}</label><br/>
+              <label>Creator: {{bill.owner.username}}</label><br/>
+              <label>Debters: {{bill.debters}}</label><br/>
+              <label>Unpaid:  </label>
+              <label ng-repeat="friend in bill.unpaid">"{{friend.username}}"&nbsp;</label><br/>
+              <label>Paid:    </label>
+              <label ng-repeat="friend in bill.paid">"{{friend.username}}"&nbsp;</label><br/>
+              <button ng-click="payBill(bill)">Pay</button>
+              <form name = "payBillForm" novalidate ng-submit="payBillForm.$valid">
+                <fieldset class="form-group">
+                  <input ng-model = "pay.status" class="form-control" type = "text" placeholder="Status" title=" status" required />
+                </fieldset>
+                <fieldset class="form-group">
+                  <input ng-model = "pay.method" class="form-control" type = "text" placeholder="Pay Method" title=" payMethod" required />
+                </fieldset>
+                </form>
+              </div>
+              <div class="modal-footer">
+                  <button class="btn btn-primary" ng-click="ok()">Pay Bill</button>
+                  <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+              </div>
+              </script>
+          <a href ng-click="open()"><label>{{bill.subject}} - {{bill.ammount | currency}}</label></a>
+        </blockquote>
+      </div>
+        </div>
+      </div>
+        <div ng-show = "tab.isSet(2)">
+            <blockquote>Bills I created
+
+            <div ng-repeat="bill in ownedBills">
+
+            <label>Subject: {{bill.subject}}</label><br/>
+            <label>Ammount: {{bill.ammount}}</label><br/>
+            <label>Debters: {{bill.debters}}</label><br/>
+            <label>Unpaid:  </label>
+            <label ng-repeat="friend in bill.unpaid">"{{friend.username}}"&nbsp;</label><br/>
+            <label>Paid:    </label>
+            <label ng-repeat="friend in bill.paid">"{{friend.username}}"&nbsp;</label><br/>
+        </div><br>
+           </blockquote>
+        </div>
+        <div ng-show = "tab.isSet(3)">
+          <blockquote>Bills I paid</blockquote>
+        </div>
+    </section>
+  </body>
+</html>
