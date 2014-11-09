@@ -117,14 +117,14 @@ app.controller('ProfileController', function ($scope, $http, $location) {
       });
 
     $scope.createBill = function(subject, ammount, debters) {
-    console.log('create')
-    console.log(debters);
-    $http.post('/createbill', {subject : subject, ammount : ammount, debters : debters})
-      .success(function(data) {
-        $location.url('/profile');
-       });
-    $modalInstance.close();
-  }
+      console.log('create')
+      console.log(debters);
+      $http.post('/createbill', {subject : subject, ammount : ammount, debters : debters})
+        .success(function(data) {
+          $location.url('/profile');
+         });
+      $modalInstance.close();
+    }
 
     $scope.cancel = function () {
       $modalInstance.dismiss('cancel');
@@ -134,7 +134,7 @@ app.controller('ProfileController', function ($scope, $http, $location) {
   app.controller('payBill', function ($scope, $modal, $log){
     $scope.pay = {status: "", method: ""}
 
-    $scope.openPayBill = function () {
+    $scope.openPayBill = function (bill) {
 
       var modalInstance = $modal.open({
         templateUrl: 'payBill.html',
@@ -142,6 +142,9 @@ app.controller('ProfileController', function ($scope, $http, $location) {
         resolve: {
           pay: function () {
             return $scope.pay;
+          }, 
+          bill: function() {
+            return bill;
           }
         }
       });
@@ -154,8 +157,9 @@ app.controller('ProfileController', function ($scope, $http, $location) {
     };
   });
 
-  app.controller('payBillModalInstanceCtrl', function ($scope, $modalInstance, pay) {
+  app.controller('payBillModalInstanceCtrl', function ($scope, $modalInstance, pay,bill) {
     $scope.pay = pay;
+    $scope.bill = bill;
     $scope.ok = function () {
       $modalInstance.close();
     };
