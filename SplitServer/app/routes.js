@@ -72,6 +72,7 @@ module.exports = function (app, passport) {
         newbill.ammount = request.body.ammount;
         newbill.subject = request.body.subject;
         newbill._id = mongoose.Types.ObjectId();
+<<<<<<< HEAD
         newbill.debters.push(request.body.debters.username);
 		
 		User.findOne(request.body.debters, function(error, debter) {
@@ -79,11 +80,28 @@ module.exports = function (app, passport) {
             newbill.save();
             console.log(newbill);
             User.findOne({
+=======
+        for (var debter in request.body.debters) {
+            User.findOne({
+                    username: request.body.debters[debter].text
+                }, function (error, user) {
+                    if (error) console.log('Error in Saving bill: ' + request.user._id + " " + err);
+                    newbill.unpaid.addToSet(user._id);
+                    newbill.save();
+                    user.chargedBills.push(newbill._id);
+                    user.save();
+                    console.log(debter + "adding ");
+                });
+        }
+        
+		User.findOne({
+>>>>>>> 16f1947edfc42855b0b85c1818c81f5abd572965
                 _id: request.user._id
             }, function (error, user) {
                 if (error) console.log('Error in Saving bill: ' + request.user._id + " " + err);
                 user.ownedBills.push(newbill._id);
                 user.save();
+<<<<<<< HEAD
             });
 
             User.findOne({
@@ -96,14 +114,22 @@ module.exports = function (app, passport) {
 
             response.send(newbill);
         });
+=======
+            })
+
+            newbill.save();
+			response.send(newbill);
+>>>>>>> 16f1947edfc42855b0b85c1818c81f5abd572965
     });
 
 
 	app.put('/payBill', isLoggedIn, function (request, response) {
 		Bill.findById(request.body.bill._id, function(error, bill) {
-			bill.unpaid.remove(request.user);
-			bill.paid.addToSet(request.user);
-			bill.save();
+            if (bill.paid.indexOf(request.user._id) == -1){
+                bill.unpaid.remove(request.user);
+			    bill.paid.addToSet(request.user);
+			    bill.save();
+            }
             response.send(200);
 		});
 	});
