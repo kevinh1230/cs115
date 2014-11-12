@@ -13,42 +13,50 @@ app.controller('ProfileController', function ($scope, $http, $location) {
 
 	$http.get('/user').success(function(user) {
 			$scope.user = user;
-			console.log(user);
-            console.log(JSON.stringify(user.friends));
-		});
+	});
 
 	$http.get('/getOwnedBills').success(function(bills){
 		$scope.ownedBills = bills;
 	})
 
 	$http.get('/getChargedBills').success(function(bills){
-		console.log('Get Charged Bills');
-        console.log(bills);
         $scope.chargedBills = bills;
 	})
+   
+    $scope.clearMessage = function() {
+        delete $scope.message;
+    }
 
 	$scope.acceptFriend = function(friend) {
-		console.log(friend);
 		$http.put('/acceptFriend', {friend: friend})
-			 .success(function(user) {
+			.success(function(user) {
 				$scope.user = user;
-			 });
+			})
+            .error(function(message) {
+                $scope.message = message;
+            });
 	}
 
 	$scope.addFriend = function(friend) {
 		$http.post('/addFriend', { friend: friend })
-			 .success(function(user) {
+			.success(function(user) {
 				$scope.user = user;
-				$scope.aFriend = '';
-			 });
+            })
+            .error(function (message) {
+                $scope.message = message;
+            });
+		$scope.aFriend = null;
 	}
 
 	$scope.deleteFriend = function(friend) {
 		$http.delete('/deleteFriend/' + friend)
-			 .success(function(user) {
+			.success(function(user) {
 				$scope.user = user;
 				$scope.dFriend = '';
-			 });
+			})
+            .error(function (message) {
+                $scope.message = message;
+            });
 	}
 
 	$scope.logout = function() {

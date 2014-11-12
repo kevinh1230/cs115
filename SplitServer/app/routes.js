@@ -26,9 +26,9 @@ module.exports = function (app, passport) {
     }));
 
     app.get('/user', function (request, response) {
-		request.user.populate( query, function(err, user) {
-			response.json(user);
-		});
+        request.user.populate( query, function(err, user) {
+            response.json(user);
+        });
     });
 
 
@@ -49,22 +49,21 @@ module.exports = function (app, passport) {
     // Routes for bills ======================================================
     app.get('/getOwnedBills', isLoggedIn, function (request, response) {
         Bill.find({ owner: request.user._id })
-			.populate(billQuery)
-		    .exec(function(error, bills) {
-				console.log(bills);
-				response.send(bills);
-			});
-
+            .populate(billQuery)
+            .exec(function(error, bills) {
+                console.log(bills);
+                response.send(bills);
+            });
     });
 
     app.get('/getChargedBills', isLoggedIn, function (request, response) {
         var chargedBills = request.user.chargedBills;
         Bill.find({ debters: {$in : [request.user.username]} })
-		    .populate(billQuery)
-		    .exec(function(error, bills) {
-				console.log(bills);
-				response.send(bills);
-			});
+	        .populate(billQuery)
+	        .exec(function(error, bills) {
+	            console.log(bills);
+	            response.send(bills);
+        });
     });
 
     app.post('/createbill', isLoggedIn, function (request, response) {
@@ -73,6 +72,15 @@ module.exports = function (app, passport) {
         newbill.ammount = request.body.ammount;
         newbill.subject = request.body.subject;
         newbill._id = mongoose.Types.ObjectId();
+<<<<<<< HEAD
+        newbill.debters.push(request.body.debters.username);
+		
+		User.findOne(request.body.debters, function(error, debter) {
+            newbill.unpaid.addToSet(debter);
+            newbill.save();
+            console.log(newbill);
+            User.findOne({
+=======
         for (var debter in request.body.debters) {
             User.findOne({
                     username: request.body.debters[debter].text
@@ -87,15 +95,31 @@ module.exports = function (app, passport) {
         }
         
 		User.findOne({
+>>>>>>> 16f1947edfc42855b0b85c1818c81f5abd572965
                 _id: request.user._id
             }, function (error, user) {
                 if (error) console.log('Error in Saving bill: ' + request.user._id + " " + err);
                 user.ownedBills.push(newbill._id);
                 user.save();
+<<<<<<< HEAD
+            });
+
+            User.findOne({
+                username: request.body.debters.username
+            }, function (error, user) {
+                if (error) console.log('Error in Saving bill: ' + request.user._id + " " + err);
+                user.chargedBills.push(newbill._id);
+                user.save();
+            });
+
+            response.send(newbill);
+        });
+=======
             })
 
             newbill.save();
 			response.send(newbill);
+>>>>>>> 16f1947edfc42855b0b85c1818c81f5abd572965
     });
 
 
@@ -119,7 +143,5 @@ module.exports = function (app, passport) {
 
 function isLoggedIn(request, response, next) {
     if (request.isAuthenticated()) return next();
-
-
     response.redirect('/');
 };
