@@ -1,4 +1,5 @@
 <div>
+    <alert ng-if="message != null" type="{{message.type}}" close="clearMessage()">{{message.text}}</alert>
     <div class="col-sm-6 jumbotron">
         <h3>Profile</h3>
 		<label>First Name: {{user.firstName}}</label><br/>
