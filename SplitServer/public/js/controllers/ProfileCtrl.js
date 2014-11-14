@@ -1,7 +1,7 @@
 var app = angular.module('ProfileCtrl', [])
 app.controller('ProfileController', function ($scope, $http, $location) {
 
-	this.tab = 1;
+    this.tab = 1;
 
     this.setTab = function(newValue){
       this.tab = newValue;
@@ -28,35 +28,38 @@ app.controller('ProfileController', function ($scope, $http, $location) {
     }
 
 	$scope.acceptFriend = function(friend) {
-		$http.put('/acceptFriend', {friend: friend})
-			.success(function(user) {
-				$scope.user = user;
-			})
+	    $http.put('/acceptFriend', {friend: friend})
+	        .success(function(data) {
+	            $scope.user = data.user;
+                $scope.message = data.message
+	        })
             .error(function(message) {
                 $scope.message = message;
             });
 	}
 
 	$scope.addFriend = function(friend) {
-		$http.post('/addFriend', { friend: friend })
-			.success(function(user) {
-				$scope.user = user;
+	    $http.post('/addFriend', { friend: friend })
+	        .success(function(data) {
+	            $scope.user = data.user;
+                $scope.message = data.message
             })
             .error(function (message) {
                 $scope.message = message;
             });
-		$scope.aFriend = null;
+        $scope.aFriend = null;
 	}
 
 	$scope.deleteFriend = function(friend) {
-		$http.delete('/deleteFriend/' + friend)
-			.success(function(user) {
-				$scope.user = user;
-				$scope.dFriend = '';
-			})
+	    $http.delete('/deleteFriend/' + friend)
+	        .success(function(data) {
+	            $scope.user = data.user;
+                $scope.message = data.message
+	        })
             .error(function (message) {
                 $scope.message = message;
             });
+	        $scope.dFriend = null;
 	}
 
 	$scope.logout = function() {

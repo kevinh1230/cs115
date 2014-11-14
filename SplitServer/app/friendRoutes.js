@@ -26,9 +26,15 @@ module.exports = function () {
             friend.save();
             
             request.user.populate( query, function (error, user) {
-                response.json(user);
+                 if (error) {
+                    console.log(error);
+                    response.json(500);    
+                } else {
+                    console.log(request.user.username + ' accepted ' + friend.username);
+                    response.json({ user: user, message: { text: 'Accepted ' + friend.username + '\'s friend request',
+                                                           type: 'success' } });
+                }
             });
-            console.log(request.user.username + ' accepted ' + friend.username);
         });
     });
 
@@ -63,9 +69,15 @@ module.exports = function () {
             friend.save();
             
             request.user.populate( query, function (error, user) {
-                response.json(user);
+                if (error) {
+                    console.log(error);
+                    response.json(500);    
+                } else {
+                    console.log(request.user.username + ' sent a friend request to ' + friend.username);
+                    response.json({ user: user, message: { text: 'Sent a friend request to ' + friend.username,
+                                                           type: 'success' } });
+                }
             });
-            console.log(request.user.username + ' sent a friend request to ' + friend.username);
         });
     });
 
@@ -99,9 +111,15 @@ module.exports = function () {
             friend.save();
             
             request.user.populate( query, function (error, user) {
-                response.json(user);
+                 if (error) {
+                    console.log(error);
+                    response.json(500);    
+                } else {
+                    console.log(request.user.username + ' deleted ' + friend.username);
+                    response.json({ user: user, message: { text: 'Deleted ' + friend.username + ' as friend',
+                                                           type: 'success' } });
+                }
             });
-            console.log(request.user.username + ' deleted ' + friend.username);
         });
     });
 
