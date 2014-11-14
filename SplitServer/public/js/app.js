@@ -1,4 +1,4 @@
-var Split = angular.module('sampleApp', ['ngRoute', 'appRoutes', 'MainCtrl', 'LoginCtrl', 'SignupCtrl', 'ProfileCtrl', 'CreateBillCtrl', 'GeekService']);
+var Split = angular.module('sampleApp', ['ngRoute', 'ui.bootstrap', 'appRoutes', 'MainCtrl', 'LoginCtrl', 'SignupCtrl', 'ProfileCtrl', 'CreateBillCtrl', 'GeekService']);
 
 Split.config(['$httpProvider', function($httpProvider) {
     $httpProvider.defaults.useXDomain = true;
