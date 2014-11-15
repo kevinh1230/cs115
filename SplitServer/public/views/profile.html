@@ -70,16 +70,22 @@
               <fieldset class="form-group">
                 <input ng-model = "aFriend" class="form-control" type = "text" placeholder="Username" title=" Username" required />
               </fieldset>
+              <button class="btn btn-primary" ng-click="addFriend(aFriend)">Add</button>
+
             </form>
-          </div>        
+          </div> 
+
+        <h3>Friend Requests</h3>
+        <div ng-repeat="friend in user.requests">
+            <label>{{friend.username}}   <button ng-click="acceptFriend(friend)">Accept</button></label>
+        </div> <br>
+
           <div class="modal-footer">
-              <button class="btn btn-primary" ng-click="addFriend(aFriend)">OK</button>
               <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
           </div>
         </script>
 
-        <button class="btn btn-default" ng-click="openAddFriend()">Add Friend</button>
-        <!--<div>Username: {{ user.name }}</div>-->
+        <button class="btn btn-default" ng-click="openAddFriend()">Friends</button>
       </div> 
 
     <div ng-controller="createBill" class = "floatright">

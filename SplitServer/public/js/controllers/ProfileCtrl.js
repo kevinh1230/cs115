@@ -182,8 +182,6 @@ app.controller('ProfileController', function ($scope, $http, $location) {
 
   app.controller('addFriend', function ($scope, $modal, $log) {
 
-    $scope.user = {name: "",friend:""}
-
     $scope.openAddFriend = function () {
 
       var modalInstance = $modal.open({
@@ -209,6 +207,15 @@ app.controller('ProfileController', function ($scope, $http, $location) {
 
   app.controller('AddFriendModalInstanceCtrl', function ($scope, $modalInstance, user,$http) {
     $scope.user = user;
+    
+    $scope.acceptFriend = function(friend) {
+          console.log(friend);
+          $http.put('/acceptFriend', {friend: friend})
+             .success(function(user) {
+              $scope.user = user;
+             });
+        }
+
     $scope.addFriend = function ( friend ) {
       $http.post('/addFriend', { friend: friend })
        .success(function(user) {
