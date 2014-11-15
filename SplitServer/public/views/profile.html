@@ -89,24 +89,6 @@
       </div>
       <div class="modal-body">
         <form name = "createBillForm" >
-          <!--<fieldset class="form-group">
-            <input ng-model = "bill.title"class="form-control" type = "text" placeholder="Title" title= "title" />
-          </fieldset>
-          <fieldset class="form-group">
-            <select ng-model = "bill.type"  class="form-control" title="type" >
-              <option value="Even">Even</option>
-              <option value="Custom">Custom</option>
-            </select>
-          </fieldset>
-          <fieldset class="form-group">
-            <input ng-model = "bill.splitters" class="form-control" type = "text" placeholder="Splitters" title= "splitters" />
-          </fieldset>
-          <fieldset class="form-group">
-              <input ng-model = "bill.amount" class="form-control" type="text"   placeholder="Amount" title= "amount"  />
-          </fieldset>
-          <fieldset class="form-group">
-            <textarea ng-model = "bill.comments" class="form-control" type = "text" placeholder="Comments" title= "comments"></textarea>
-          </fieldset> -->
 
           <div class="form-group">
             <label>Subject/Description</label>
@@ -118,7 +100,10 @@
           </div>
           <div class="form-group">
             <label>People to charge</label>
-            <input typeahead="friend as friend.username for friend in friends | filter:$viewValue | limitTo:8" type="text" class="form-control" placeholder="Who do you want to charge?" ng-model="debters", require>
+            <!--<input typeahead="friend as friend.username for friend in friends | filter:$viewValue | limitTo:8" type="text" class="form-control" placeholder="Who do you want to charge?" ng-model="debters", require> -->
+            <tags-input ng-model="debterList" add-on-enter="true" add-on-space="true" on-tag-added="verifyTag($tag)">
+              <auto-complete source="loadFriends($query)" highlight-matched-text="true" min-length="1" load-on-empty="true"></auto-complete>
+            </tags-input>
           </div>
 
         </form>
@@ -145,10 +130,10 @@
           <a href ng-click = "tab.setTab(3)">Bills I paid</a></li>
       </ul>
       <div ng-show = "tab.isSet(1)">
-        <div ng-controller="payBill">
+        <div ng-controller="payBillModal">
           <blockquote>
             <div ng-repeat = "bill in chargedBills">
-              <script type="text/ng-template" id="payBill.html">
+              <script type="text/ng-template" id="payBillModal.html">
                 <div class="modal-header">
                   <h3 class="modal-title">Pay Bill</h3>
                 </div>

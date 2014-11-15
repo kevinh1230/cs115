@@ -142,13 +142,13 @@ app.controller('ProfileController', function ($scope, $http, $location) {
     };
   });
 
-  app.controller('payBill', function ($scope, $modal, $log){
+  app.controller('payBillModal', function ($scope, $modal, $log){
     $scope.pay = {status: "", method: ""}
 
     $scope.openPayBill = function (bill) {
 
       var modalInstance = $modal.open({
-        templateUrl: 'payBill.html',
+        templateUrl: 'payBillModal.html',
         controller: 'payBillModalInstanceCtrl',
         resolve: {
           pay: function () {
