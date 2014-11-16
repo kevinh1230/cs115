@@ -58,7 +58,7 @@ module.exports = function (app, passport) {
 
     app.get('/getChargedBills', isLoggedIn, function (request, response) {
         var chargedBills = request.user.chargedBills;
-        Bill.find({ debters: {$in : [request.user.username]} })
+        Bill.find({ $or: [{ unpaid:request.user }, { paid: request.user }] })
 	        .populate(billQuery)
 	        .exec(function(error, bills) {
 	            console.log(bills);
