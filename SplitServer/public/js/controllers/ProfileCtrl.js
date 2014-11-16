@@ -69,17 +69,27 @@ app.controller('ProfileController', function ($scope, $http, $location) {
 			 });
 	}
 
-    $scope.payBill = function(bill) {
-        $http.put('/payBill', { bill: bill })
-             .success(function(response) {
-                 if (response)
-                 	$http.get('/getChargedBills').success(function(bills){
-                        $scope.chargedBills = bills;
-	                });
-                else 
-                 console.log('Fail to get bills');
-             });
+  $scope.payBill = function(bill) {
+    $http.put('/payBill', { bill: bill })
+      .success(function(response) {
+      if (response)
+        $http.get('/getChargedBills').success(function(bills){
+        $scope.chargedBills = bills;
+	    });
+      else 
+        console.log('Fail to get bills');
+      });
     }
+
+  $scope.checkUnpaid = function(user, bill){
+    $scope.user = user;
+    for(var i in bill.unpaid){
+      if(user.username == bill.unpaid[i].username){
+        return true;
+      }
+    }
+    return false;
+  }
 });
 
   app.controller('createBill', function ($scope, $modal, $log) {
@@ -252,6 +262,38 @@ app.controller('ownedBills', function ($scope, $modal, $log){
   });
 
   app.controller('ownedBillsModalInstanceCtrl', function ($scope, $modalInstance,bill) {
+    $scope.bill = bill;
+    $scope.ok = function () {
+      $modalInstance.close();
+    };
+
+    $scope.cancel = function () {
+      $modalInstance.dismiss('cancel');
+    };
+  });
+
+app.controller('paidBills', function ($scope, $modal, $log){
+
+    $scope.openPaidBill = function (bill) {
+
+      var modalInstance = $modal.open({
+        templateUrl: 'paidBills.html',
+        controller: 'paidBillsModalInstanceCtrl',
+        resolve: { 
+          bill: function() {
+            return bill;
+          }
+        }
+      });
+
+      modalInstance.result.then(function () {
+      }, function () {
+        $log.info('Modal dismissed at: ' + new Date());
+      });
+    };
+  });
+
+  app.controller('paidBillsModalInstanceCtrl', function ($scope, $modalInstance,bill) {
     $scope.bill = bill;
     $scope.ok = function () {
       $modalInstance.close();
