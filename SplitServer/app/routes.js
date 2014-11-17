@@ -79,22 +79,12 @@ module.exports = function (app, passport) {
                     if (error) console.log('Error in Saving bill: ' + request.user._id + " " + err);
                     newbill.unpaid.addToSet(user._id);
                     newbill.save();
-                    user.chargedBills.push(newbill._id);
-                    user.save();
                     console.log(debter + "adding ");
                 });
         }
         
-		User.findOne({
-                _id: request.user._id
-            }, function (error, user) {
-                if (error) console.log('Error in Saving bill: ' + request.user._id + " " + err);
-                user.ownedBills.push(newbill._id);
-                user.save();
-            })
-
-            newbill.save();
-			response.send(newbill);
+        newbill.save();
+        response.send(newbill);
     });
 
 
