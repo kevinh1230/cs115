@@ -4,13 +4,13 @@
         <fieldset class="form-group">
             <input ng-model = "afriend" class="form-control" type = "text" placeholder="username" title=" username" required />
         </fieldset>
-        <button class="btn btn-primary" ng-click="addfriend(afriend)">ok</button>
+        <button class="btn btn-primary" ng-click="addFriend(afriend)">ok</button>
     </form>
 </div>
 
 <h3>friend requests</h3>
 <div ng-repeat="friend in user.requests">
-    <label>{{friend.username}}   <button ng-click="acceptfriend(friend)">accept</button></label>
+    <label>{{friend.username}}   <button ng-click="acceptFriend(friend)">accept</button></label>
 </div> <br>
 
 <div class="modal-footer">
