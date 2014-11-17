@@ -1,7 +1,8 @@
 <div>
     <!-- Friend list -->
     <div ng-controller="addFriend" class = "floatright">
-        <button class="btn btn-default" ng-click="openAddFriend()">Friends</button>
+        <button class="btn btn-default" ng-click="openAddFriend()" ng-show="user.requests.length == 1">Friends ({{user.requests.length}} new request)</button>
+        <button class="btn btn-default" ng-click="openAddFriend()" ng-hide="user.requests.length == 1">Friends ({{user.requests.length}} new requests)</button>
     </div> 
     
     <!-- Create Bills -->
@@ -59,6 +60,7 @@
             </div>
         </div>
     </section>
+</div>
     </br>
     </br>
     </br>
