@@ -20,10 +20,18 @@ module.exports = function (app, passport) {
         failureRedirect: '/signup',
     }));
 
-    app.post('/login', passport.authenticate('local-login', {
-        successRedirect: '/profile',
-        failureRedirect: '/login',
-    }));
+
+    app.post('/login', function(request, response) {
+        passport.authenticate('local-login', function(error, user, info) {
+            if (error) return response.send(500);
+            if (!user) return response.json(400, { text: 'Username or Password wrong',
+                                                   type: 'danger' });
+            request.logIn(user, function(error) {
+                if (error) return response.send(500);
+                response.send(200);
+            });
+        })(request, response);
+    });
 
     app.get('/user', function (request, response) {
         request.user.populate( query, function(err, user) {
