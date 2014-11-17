@@ -11,9 +11,9 @@ app.controller('ProfileController', function ($scope, $http, $location) {
       return this.tab === tabName;
     };
 
-	$http.get('/user').success(function(user) {
-			$scope.user = user;
-	});
+    $http.get('/user').success(function(user) {
+        $scope.user = user;
+    });
 
 	$http.get('/getOwnedBills').success(function(bills){
 		$scope.ownedBills = bills;
@@ -74,6 +74,7 @@ app.controller('ProfileController', function ($scope, $http, $location) {
             .success(function(response) {
                 if (response)
                     $http.get('/getChargedBills').success(function(bills){
+                        console.log(bills)
                         $scope.chargedBills = bills;
                     });
                 else 
@@ -82,7 +83,6 @@ app.controller('ProfileController', function ($scope, $http, $location) {
     }
 
     $scope.checkUnpaid = function(user, bill){
-        $scope.user = user;
         for(var i in bill.unpaid){
             if(user.username == bill.unpaid[i].username){
                 return true;
@@ -157,20 +157,21 @@ app.controller('ModalInstanceCtrl', function($scope, $modalInstance, bill, $http
 });
 
 app.controller('payBillModal', function($scope, $modal, $log) {
-    $scope.pay = {
-        status: "",
-        method: ""
-    }
+    //$scope.pay = {
+    //    status: "",
+    //    method: ""
+    //}
 
     $scope.openPayBill = function(bill) {
 
         var modalInstance = $modal.open({
             templateUrl: '/views/profileModal/payBillModal.html',
             controller: 'payBillModalInstanceCtrl',
+            scope: $scope,
             resolve: {
-                pay: function() {
-                    return $scope.pay;
-                },
+    //            pay: function() {
+    //                return $scope.pay;
+    //            },
                 bill: function() {
                     return bill;
                 }
@@ -185,14 +186,16 @@ app.controller('payBillModal', function($scope, $modal, $log) {
     };
 });
 
-app.controller('payBillModalInstanceCtrl', function($scope, $modalInstance, pay, bill) {
-    $scope.pay = pay;
+app.controller('payBillModalInstanceCtrl', function($scope, $http, $modalInstance, bill) {
+    //$scope.pay = pay;
     $scope.bill = bill;
     $scope.ok = function() {
+        $scope.payBill(bill);
         $modalInstance.close();
     };
 
     $scope.cancel = function() {
+        console.log($scope.user);
         $modalInstance.dismiss('cancel');
     };
 });
