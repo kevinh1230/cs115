@@ -229,24 +229,27 @@ app.controller('AddFriendModalInstanceCtrl', function($scope, $modalInstance, us
     $scope.user = user;
 
     $scope.acceptFriend = function(friend) {
-        console.log(friend);
-        $http.put('/acceptFriend', {
-                friend: friend
-            })
-            .success(function(user) {
-                $scope.user = user;
+	    $http.put('/acceptFriend', {friend: friend})
+	        .success(function(data) {
+	            $scope.user = data.user;
+                $scope.message = data.message
+	        })
+            .error(function(message) {
+                $scope.message = message;
             });
     }
 
     $scope.addFriend = function(friend) {
-        $http.post('/addFriend', {
-                friend: friend
+	    $http.post('/addFriend', { friend: friend })
+	        .success(function(data) {
+	            $scope.user = data.user;
+                $scope.message = data.message
+                $modalInstance.close();
             })
-            .success(function(user) {
-                $scope.user = user;
-                $scope.aFriend = '';
+            .error(function (message) {
+                $scope.message = message;
             });
-        $modalInstance.close();
+        $scope.aFriend = null;
     };
 
     $scope.cancel = function() {

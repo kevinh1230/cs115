@@ -1,18 +1,21 @@
 <div class="modal-body">
+    <h3>Friends</h3>
+    <label ng-repeat="friend in user.friends"> "{{friend.username}}"&nbsp;</label><br/>
+    <hr>
     <h3>add a friend</h3>
     <form name = "addfriendform" novalidate ng-submit="addfriendform.$valid">
         <fieldset class="form-group">
             <input ng-model = "afriend" class="form-control" type = "text" placeholder="username" title=" username" required />
         </fieldset>
-        <button class="btn btn-primary" ng-click="addfriend(afriend)">ok</button>
+        <button class="btn btn-primary" ng-click="addFriend(afriend)">Add</button>
     </form>
+    <hr>
+    <h3>friend requests</h3>
+    <div ng-repeat="friend in user.requests">
+        <label>{{friend.username}}   <button ng-click="acceptFriend(friend)">accept</button></label>
+    </div> <br>
+
 </div>
-
-<h3>friend requests</h3>
-<div ng-repeat="friend in user.requests">
-    <label>{{friend.username}}   <button ng-click="acceptfriend(friend)">accept</button></label>
-</div> <br>
-
 <div class="modal-footer">
     <button class="btn btn-warning" ng-click="cancel()">cancel</button>
 </div>
