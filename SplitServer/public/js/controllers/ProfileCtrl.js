@@ -1,5 +1,5 @@
 var app = angular.module('ProfileCtrl', [])
-app.controller('ProfileController', function ($scope, $http, $location) {
+app.controller('ProfileController', function ($scope, $http, $location, $modal, $log) {
 
     this.tab = 1;
 
@@ -90,24 +90,14 @@ app.controller('ProfileController', function ($scope, $http, $location) {
         }
         return false;
     }
-});
 
-app.controller('createBill', function($scope, $modal, $log) {
-    $scope.bill = {
-        subject: "",
-        amount: "",
-        debters: "",
-    }
+    //code to open modals
 
-
-    $scope.openCreateBill = function(size) {
-
-        console.log("open");
+    $scope.openCreateBill = function() {
 
         var modalInstance = $modal.open({
             templateUrl: '/views/profileModal/createBill.html',
-            controller: 'ModalInstanceCtrl',
-            size: size,
+            controller: 'BillModalInstanceCtrl',
             resolve: {
                 bill: function() {
                     return $scope.bill;
@@ -115,13 +105,86 @@ app.controller('createBill', function($scope, $modal, $log) {
             }
         });
 
+        modalInstance.result.then(function() {
+        }, function() {
+            $log.info('Modal dismissed at: ' + new Date() + "create");
+        });
+    };
+
+    $scope.openPayBill = function(bill) {
+
+        var modalInstance = $modal.open({
+            templateUrl: '/views/profileModal/payBillModal.html',
+            controller: 'BillModalInstanceCtrl',
+            scope: $scope,
+            resolve: {
+                bill: function() {
+                    return bill;
+                }
+            }
+        });
+
+        modalInstance.result.then(function() {
+        }, function() {
+            $log.info('Modal dismissed at: ' + new Date());
+        });
+    };
+
+     $scope.openOwnedBill = function(bill) {
+
+        var modalInstance = $modal.open({
+            templateUrl: '/views/profileModal/ownedBills.html',
+            controller: 'BillModalInstanceCtrl',
+            resolve: {
+                bill: function() {
+                    return bill;
+                }
+            }
+        });
+
         modalInstance.result.then(function() {}, function() {
-            $log.info('ModalInstanceCtrl dismissed at: ' + new Date() + "create");
+            $log.info('Modal dismissed at: ' + new Date());
+        });
+    };
+
+    $scope.openPaidBill = function(bill) {
+
+        var modalInstance = $modal.open({
+            templateUrl: '/views/profileModal/paidBills.html',
+            controller: 'BillModalInstanceCtrl',
+            resolve: {
+                bill: function() {
+                    return bill;
+                }
+            }
+        });
+
+        modalInstance.result.then(function() {}, function() {
+            $log.info('Modal dismissed at: ' + new Date());
+        });
+    };
+
+    $scope.openAddFriend = function() {
+
+        var modalInstance = $modal.open({
+            templateUrl: '/views/profileModal/addFriend.html',
+            controller: 'UserModalInstanceCtrl',
+            resolve: {
+                user: function() {
+                    return $scope.user;
+                }
+            }
+        });
+
+        modalInstance.result.then(function() {
+        }, function() {
+            $log.info('Modal dismissed at: ' + new Date());
         });
     };
 });
 
-app.controller('ModalInstanceCtrl', function($scope, $modalInstance, bill, $http, $location) {
+//bill function controller
+app.controller('BillModalInstanceCtrl', function($scope, $modalInstance, bill, $http, $location) {
     $scope.bill = bill;
 
     $http.get('/auth').success(function(data) {
@@ -151,98 +214,39 @@ app.controller('ModalInstanceCtrl', function($scope, $modalInstance, bill, $http
         $modalInstance.close();
     }
 
-    $scope.cancel = function() {
-        $modalInstance.dismiss('cancel');
-    };
-});
-
-app.controller('payBillModal', function($scope, $modal, $log) {
-    //$scope.pay = {
-    //    status: "",
-    //    method: ""
-    //}
-
-    $scope.openPayBill = function(bill) {
-
-        var modalInstance = $modal.open({
-            templateUrl: '/views/profileModal/payBillModal.html',
-            controller: 'payBillModalInstanceCtrl',
-            scope: $scope,
-            resolve: {
-    //            pay: function() {
-    //                return $scope.pay;
-    //            },
-                bill: function() {
-                    return bill;
-                }
-            }
-        });
-
-        modalInstance.result.then(function() {
-            //$scope.user = {}; //reset form
-        }, function() {
-            $log.info('Modal dismissed at: ' + new Date());
-        });
-    };
-});
-
-app.controller('payBillModalInstanceCtrl', function($scope, $http, $modalInstance, bill) {
-    //$scope.pay = pay;
-    $scope.bill = bill;
-    $scope.ok = function() {
+    $scope.payBillButton = function() {
         $scope.payBill(bill);
         $modalInstance.close();
     };
 
+    $scope.ok = function() {
+        $modalInstance.close();
+    };
+
     $scope.cancel = function() {
-        console.log($scope.user);
         $modalInstance.dismiss('cancel');
     };
-});
+ });
 
-app.controller('addFriend', function($scope, $modal, $log) {
-
-    $scope.openAddFriend = function() {
-
-        var modalInstance = $modal.open({
-            templateUrl: '/views/profileModal/addFriend.html',
-            controller: 'AddFriendModalInstanceCtrl',
-            resolve: {
-                user: function() {
-                    return $scope.user;
-                }
-            }
-        });
-
-        modalInstance.result.then(function() {
-            //$scope.user = {}; //reset form
-        }, function() {
-            $log.info('Modal dismissed at: ' + new Date());
-        });
-    };
-});
-
-// Please note that $modalInstance represents a modal window (instance) dependency.
-// It is not the same as the $modal service used above.
-
-app.controller('AddFriendModalInstanceCtrl', function($scope, $modalInstance, user, $http) {
+//friend function controller
+app.controller('UserModalInstanceCtrl', function($scope, $modalInstance, user, $http, $location) {
     $scope.user = user;
 
     $scope.acceptFriend = function(friend) {
-	    $http.put('/acceptFriend', {friend: friend})
-	        .success(function(data) {
-	            $scope.user = data.user;
-                $scope.message = data.message
-	        })
-            .error(function(message) {
-                $scope.message = message;
-            });
+    $http.put('/acceptFriend', {friend: friend})
+        .success(function(data) {
+            $scope.user = data.user;
+            $scope.message = data.message
+        })
+        .error(function(message) {
+            $scope.message = message;
+        });
     }
 
     $scope.addFriend = function(friend) {
-	    $http.post('/addFriend', { friend: friend })
-	        .success(function(data) {
-	            $scope.user = data.user;
+        $http.post('/addFriend', { friend: friend })
+            .success(function(data) {
+                $scope.user = data.user;
                 $scope.message = data.message
                 $modalInstance.close();
             })
@@ -250,68 +254,6 @@ app.controller('AddFriendModalInstanceCtrl', function($scope, $modalInstance, us
                 $scope.message = message;
             });
         $scope.aFriend = null;
-    };
-
-    $scope.cancel = function() {
-        $modalInstance.dismiss('cancel');
-    };
-});
-
-app.controller('ownedBills', function($scope, $modal, $log) {
-
-    $scope.openOwnedBill = function(bill) {
-
-        var modalInstance = $modal.open({
-            templateUrl: '/views/profileModal/ownedBills.html',
-            controller: 'ownedBillsModalInstanceCtrl',
-            resolve: {
-                bill: function() {
-                    return bill;
-                }
-            }
-        });
-
-        modalInstance.result.then(function() {}, function() {
-            $log.info('Modal dismissed at: ' + new Date());
-        });
-    };
-});
-
-app.controller('ownedBillsModalInstanceCtrl', function($scope, $modalInstance, bill) {
-    $scope.bill = bill;
-    $scope.ok = function() {
-        $modalInstance.close();
-    };
-
-    $scope.cancel = function() {
-        $modalInstance.dismiss('cancel');
-    };
-});
-
-app.controller('paidBills', function($scope, $modal, $log) {
-
-    $scope.openPaidBill = function(bill) {
-
-        var modalInstance = $modal.open({
-            templateUrl: '/views/profileModal/paidBills.html',
-            controller: 'paidBillsModalInstanceCtrl',
-            resolve: {
-                bill: function() {
-                    return bill;
-                }
-            }
-        });
-
-        modalInstance.result.then(function() {}, function() {
-            $log.info('Modal dismissed at: ' + new Date());
-        });
-    };
-});
-
-app.controller('paidBillsModalInstanceCtrl', function($scope, $modalInstance, bill) {
-    $scope.bill = bill;
-    $scope.ok = function() {
-        $modalInstance.close();
     };
 
     $scope.cancel = function() {
