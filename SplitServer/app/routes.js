@@ -6,7 +6,8 @@ var query = [{ path: 'friends', select: 'username' },
 			 { path: 'requested', select: 'username' }];
 var billQuery = [{ path: 'paid', select: 'username'},
 				 { path: 'unpaid', select: 'username'},
-				 { path: 'owner', select: 'username'}];
+				 { path: 'owner', select: 'username'},
+                 { path: 'group.user', select: 'username firstName lastName' }];
 
 var async = require('async');
 
@@ -68,7 +69,7 @@ module.exports = function (app, passport) {
 
     app.get('/getChargedBills', isLoggedIn, function (request, response) {
         var chargedBills = request.user.chargedBills;
-        Bill.find({ $or: [{ unpaid:request.user }, { paid: request.user }] })
+        Bill.find({ 'group.user': request.user })
 	        .populate(billQuery)
 	        .exec(function(error, bills) {
 	            //console.log(bills);
@@ -96,14 +97,13 @@ module.exports = function (app, passport) {
 
 
 	app.put('/payBill', isLoggedIn, function (request, response) {
-		Bill.findById(request.body.bill._id, function(error, bill) {
-            if (bill.paid.indexOf(request.user._id) == -1){
-                bill.unpaid.remove(request.user);
-			    bill.paid.addToSet(request.user);
-			    bill.save();
-            }
-            response.send(200);
-		});
+        Bill.update({ _id: request.body.bill._id, 'group.user': request.user._id },{ $set: { 'group.$.paid': true } })
+            .exec(function(error) {
+                if (error) 
+                    response.send(500);
+                else 
+                    response.send(200);
+            });
 	});
 
     // frontend routes =========================================================

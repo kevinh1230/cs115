@@ -16,6 +16,7 @@ app.controller('ProfileController', function ($scope, $http, $location, $modal, 
     });
 
 	$http.get('/getOwnedBills').success(function(bills){
+        console.log(bills);
 		$scope.ownedBills = bills;
 	})
 
@@ -83,12 +84,15 @@ app.controller('ProfileController', function ($scope, $http, $location, $modal, 
     }
 
     $scope.checkUnpaid = function(user, bill){
-        for(var i in bill.unpaid){
-            if(user.username == bill.unpaid[i].username){
+        console.log('-----------------------------');
+        console.log(bill);
+        return bill.group.some(function(friend) {
+            console.log(friend);
+            if(!friend.paid && user._id == friend.user._id) {
+                console.log('NOT PAIDt');
                 return true;
             }
-        }
-        return false;
+        });
     }
 
     //code to open modals
