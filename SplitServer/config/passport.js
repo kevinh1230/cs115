@@ -45,6 +45,7 @@ module.exports = function(passport) {
           		newUser.email = req.param('email');
           		newUser.firstName = req.param('firstName');
           		newUser.lastName = req.param('lastName');
+                newUser.venmoAuthed = false;
 				// save the user
                 newUser.save(function(err) {
                     if (err){

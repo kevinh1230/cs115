@@ -29,7 +29,7 @@
                 <blockquote>
                     <div ng-repeat="bill in chargedBills">
                         <a href ng-click="openPayBill(bill)" ng-show="checkUnpaid(user,bill)">
-                            <label>{{bill.subject}} - {{bill.ammount | currency}}</label>
+                            <label>{{bill.subject}} - {{bill.amount | currency}}</label>
                         </a>
                     </div>
                 </blockquote>
@@ -41,7 +41,7 @@
                 <blockquote>
                     <div ng-repeat="bill in ownedBills">
                         <a href ng-click="openOwnedBill(bill)">
-                            <label>{{bill.subject}} - {{bill.ammount | currency}}</label>
+                            <label>{{bill.subject}} - {{bill.amount | currency}}</label>
                         </a>
                     </div>
                 </blockquote>
@@ -53,7 +53,7 @@
                 <blockquote>
                     <div ng-repeat="bill in chargedBills">
                         <a href ng-click="openPaidBill(bill)" ng-hide="checkUnpaid(user,bill)">
-                            <label>{{bill.subject}} - {{bill.ammount | currency}}</label>
+                            <label>{{bill.subject}} - {{bill.amount | currency}}</label>
                         </a>
                     </div>
                 </blockquote>
@@ -102,7 +102,7 @@
         <h3>Bills Owned</h3>
         <div ng-repeat="bill in ownedBills">
             <label>Subject: {{bill.subject}}</label><br/>
-            <label>Ammount: {{bill.ammount}}</label><br/>
+            <label>amount: {{bill.amount}}</label><br/>
             <label>Debters: {{bill.debters}}</label><br/>
             <label>Unpaid:  </label>
             <label ng-repeat="friend in bill.unpaid">"{{friend.username}}"&nbsp;</label><br/>
@@ -112,7 +112,7 @@
         <h3>Bills Charged</h3>
         <div ng-repeat="bill in chargedBills">
             <label>Subject: {{bill.subject}}</label><br/>
-            <label>Amount: {{bill.ammount}}</label><br/>
+            <label>Amount: {{bill.amount}}</label><br/>
             <label>Creator: {{bill.owner.username}}</label><br/>
             <label>Debters: {{bill.debters}}</label><br/>
             <label>Unpaid:  </label>

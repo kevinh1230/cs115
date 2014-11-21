@@ -13,6 +13,16 @@ app.controller('ProfileController', function ($scope, $http, $location) {
 
     $http.get('/user').success(function(user) {
         $scope.user = user;
+        if (!user.venmoAuthed) {
+            var venmoAuthCode = $location.search();
+            $http.post('/accesstoken', {code: venmoAuthCode.code})
+            .success(function(data) {
+                $scope.message = data;
+            })
+            .error(function(message) {
+                $scope.message = message;
+            })
+        }
     });
 
 	$http.get('/getOwnedBills').success(function(bills){
@@ -22,7 +32,7 @@ app.controller('ProfileController', function ($scope, $http, $location) {
 	$http.get('/getChargedBills').success(function(bills){
         $scope.chargedBills = bills;
 	})
-   
+
     $scope.clearMessage = function() {
         delete $scope.message;
     }
@@ -137,12 +147,12 @@ app.controller('ModalInstanceCtrl', function($scope, $modalInstance, bill, $http
         console.log($scope.friends);
     });
 
-    $scope.createBill = function(subject, ammount, debters) {
+    $scope.createBill = function(subject, amount, debters) {
         console.log('create')
         console.log(debters);
         $http.post('/createbill', {
                 subject: subject,
-                ammount: ammount,
+                amount: amount,
                 debters: debters
             })
             .success(function(data) {

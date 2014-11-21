@@ -48,11 +48,11 @@ angular.module('CreateBillCtrl', ['ngTagsInput']).service('friends', function($h
 		
 	}
 
-	$scope.createBill = function(subject, ammount) {
+	$scope.createBill = function(subject, amount) {
 		console.log('create')
 		console.log($scope.debterList);
 		var debters = $scope.debterList;
-		$http.post('/createbill', {subject : subject, ammount : ammount, debters : debters})
+		$http.post('/createbill', {subject : subject, amount : amount, debters : debters})
 			.success(function(data) {
 				$location.url('/profile');
 			 });

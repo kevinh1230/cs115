@@ -1,6 +1,8 @@
 var User = require('../app/models/User');
 var Bill = require('../app/models/Bill');
 var mongoose = require('mongoose');
+var requester = require('request');
+
 var query = [{ path: 'friends', select: 'username' }, 
 			 { path: 'requests', select: 'username' },
 			 { path: 'requested', select: 'username' }];
@@ -16,7 +18,7 @@ module.exports = function (app, passport) {
     // Login Authentication and Signup Routes ==================================
     // Handles user authentication and profiles
     app.post('/signup', passport.authenticate('local-signup', {
-        successRedirect: '/profile',
+        successRedirect: 'https://api.venmo.com/v1/oauth/authorize?client_id=2114&scope=make_payments%20access_profile%20access_email%20access_phone%20access_balance&response_type=code',
         failureRedirect: '/signup',
     }));
 
@@ -53,13 +55,47 @@ module.exports = function (app, passport) {
         response.redirect('/');
     });
 
+    
+
+    app.post('/accesstoken', function(request, response) {
+        if (!request.user.venmoAuthed) {
+        var code = request.body.code;
+        var client_id = "2114";
+        var client_secret = "nsWqxLQzYcVkFJepqtGyqun6UfvRWWV9";
+
+        var data = {
+            client_id: client_id,
+            client_secret: client_secret,
+            code: code
+        }
+
+        requester.post({
+            headers: {'content-type' : 'application/x-www-form-urlencoded'},
+            url:     'https://api.venmo.com/v1/oauth/access_token',
+            form:    data
+        }, function(error, res, body){
+            User.findOne({username: request.user.username}, function (error, user) {
+                if (error) console.log ("error in saving venmo token " + request.user._id + " " + error);
+                console.log(body.id);
+                var token = JSON.parse(body);
+                if (!token.hasOwnProperty('error')) {
+                    user.venmoToken = token;
+                    user.venmoAuthed = true;
+                    user.save();
+                }
+            })
+            response.send(body);
+        }); } else {
+            console.log("avoided token request!!");
+        }
+
+    });
 
     // Routes for bills ======================================================
     app.get('/getOwnedBills', isLoggedIn, function (request, response) {
         Bill.find({ owner: request.user._id })
             .populate(billQuery)
             .exec(function(error, bills) {
-                console.log(bills);
                 response.send(bills);
             });
     });
@@ -69,7 +105,6 @@ module.exports = function (app, passport) {
         Bill.find({ $or: [{ unpaid:request.user }, { paid: request.user }] })
 	        .populate(billQuery)
 	        .exec(function(error, bills) {
-	            console.log(bills);
 	            response.send(bills);
         });
     });
@@ -77,7 +112,7 @@ module.exports = function (app, passport) {
     app.post('/createbill', isLoggedIn, function (request, response) {
         var newbill = new Bill();
         newbill.owner = request.user;
-        newbill.ammount = request.body.ammount;
+        newbill.amount = request.body.amount;
         newbill.subject = request.body.subject;
         newbill._id = mongoose.Types.ObjectId();
         for (var debter in request.body.debters) {
@@ -101,10 +136,40 @@ module.exports = function (app, passport) {
             if (bill.paid.indexOf(request.user._id) == -1){
                 bill.unpaid.remove(request.user);
 			    bill.paid.addToSet(request.user);
+                User.findOne({_id : bill.owner}, function (err, user) {
+                    if (err) console.log(err);
+                    console.log(user.venmoToken.id);
+                var token = request.user.venmoToken;
+                console.log(token.user.id);
+
+                var payment = {
+                    client_id: 2114,
+                    user_id: user.venmoToken.user.id,
+                    note: bill.subject,
+                    amount: bill.amount,
+                    access_token: token.access_token
+                }
+
+                console.log(payment);
+
+                requester.post({
+                    headers: {'content-type' : 'application/x-www-form-urlencoded'},
+                    url:     'https://api.venmo.com/v1/payments',
+                    form:    payment
+                }, function(error, res, body){
+                    console.log(body);
+                });
+                 });
+                } else {
+                    console.log("avoided token request!!");
+                }
+
+
 			    bill.save();
+                response.send(200);
             }
-            response.send(200);
-		});
+           
+		);
 	});
 
     // frontend routes =========================================================
