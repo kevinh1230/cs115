@@ -85,6 +85,7 @@ module.exports = function (app, passport) {
                     username: request.body.debters[debter].text
                 }, function (error, user) {
                     if (error) console.log('Error in Saving bill: ' + request.user._id + " " + err);
+                    newbill.group.addToSet({ user: user._id, amount: request.body.debters[debter].amount, paid: false });
                     newbill.unpaid.addToSet(user._id);
                     newbill.save();
                     console.log(debter + "adding ");
