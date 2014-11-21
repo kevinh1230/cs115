@@ -8,7 +8,10 @@ var query = [{ path: 'friends', select: 'username' },
 			 { path: 'requested', select: 'username' }];
 var billQuery = [{ path: 'paid', select: 'username'},
 				 { path: 'unpaid', select: 'username'},
-				 { path: 'owner', select: 'username'}];
+				 { path: 'owner', select: 'username'},
+                 { path: 'group.user', select: 'username firstName lastName' }];
+
+var async = require('async');
 
 module.exports = function (app, passport) {
     // server routes ===========================================================
@@ -102,7 +105,7 @@ module.exports = function (app, passport) {
 
     app.get('/getChargedBills', isLoggedIn, function (request, response) {
         var chargedBills = request.user.chargedBills;
-        Bill.find({ $or: [{ unpaid:request.user }, { paid: request.user }] })
+        Bill.find({ 'group.user': request.user })
 	        .populate(billQuery)
 	        .exec(function(error, bills) {
 	            response.send(bills);
@@ -114,24 +117,22 @@ module.exports = function (app, passport) {
         newbill.owner = request.user;
         newbill.amount = request.body.amount;
         newbill.subject = request.body.subject;
-        newbill._id = mongoose.Types.ObjectId();
-        for (var debter in request.body.debters) {
-            User.findOne({
-                    username: request.body.debters[debter].text
-                }, function (error, user) {
-                    if (error) console.log('Error in Saving bill: ' + request.user._id + " " + err);
-                    newbill.unpaid.addToSet(user._id);
-                    newbill.save();
-                    console.log(debter + "adding ");
-                });
-        }
         
-        newbill.save();
-        response.send(newbill);
+        async.each(request.body.debters, function (debter, done) {
+            User.findOne( {username: debter.text}, function (error, user) {
+                if (error) console.log('Error in Saving bill: ' + request.user._id + " " + err);
+                newbill.group.addToSet({ user: user._id, amount: debter.amount, paid: false });
+                newbill.unpaid.addToSet(user._id);
+            }).exec(done);
+        }, function(err) {
+            newbill.save();  
+            response.send(newbill);
+        });
     });
 
 
 	app.put('/payBill', isLoggedIn, function (request, response) {
+
 		Bill.findById(request.body.bill._id, function(error, bill) {
             if (bill.paid.indexOf(request.user._id) == -1){
                 bill.unpaid.remove(request.user);
@@ -159,7 +160,7 @@ module.exports = function (app, passport) {
                 }, function(error, res, body){
                     console.log(body);
                 });
-                 });
+                });
                 } else {
                     console.log("avoided token request!!");
                 }

@@ -8,6 +8,12 @@
     <br/>
     <!--    <label>Debters: {{bill.debters}}</label> -->
     <!--    <br/> -->
+    <label>Debters: </label>
+    <div ng-repeat="friend in bill.group">
+        <label>    
+            {{friend.user.firstName}} {{friend.user.lastName}} - ${{friend.amount}} [{{friend.paid?'PAID':'UNPAID'}}]
+        </label> 
+    </div>
     <label>Unpaid: </label>
     <label ng-repeat="friend in bill.unpaid">"{{friend.username}}"&nbsp;</label>
     <br/>
