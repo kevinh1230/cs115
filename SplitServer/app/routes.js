@@ -8,6 +8,8 @@ var billQuery = [{ path: 'paid', select: 'username'},
 				 { path: 'unpaid', select: 'username'},
 				 { path: 'owner', select: 'username'}];
 
+var async = require('async');
+
 module.exports = function (app, passport) {
     // server routes ===========================================================
     // handle things like api calls
@@ -59,7 +61,7 @@ module.exports = function (app, passport) {
         Bill.find({ owner: request.user._id })
             .populate(billQuery)
             .exec(function(error, bills) {
-                console.log(bills);
+                //console.log(bills);
                 response.send(bills);
             });
     });
@@ -69,7 +71,7 @@ module.exports = function (app, passport) {
         Bill.find({ $or: [{ unpaid:request.user }, { paid: request.user }] })
 	        .populate(billQuery)
 	        .exec(function(error, bills) {
-	            console.log(bills);
+	            //console.log(bills);
 	            response.send(bills);
         });
     });
@@ -79,21 +81,17 @@ module.exports = function (app, passport) {
         newbill.owner = request.user;
         newbill.ammount = request.body.ammount;
         newbill.subject = request.body.subject;
-        newbill._id = mongoose.Types.ObjectId();
-        for (var debter in request.body.debters) {
-            User.findOne({
-                    username: request.body.debters[debter].text
-                }, function (error, user) {
-                    if (error) console.log('Error in Saving bill: ' + request.user._id + " " + err);
-                    newbill.group.addToSet({ user: user._id, amount: request.body.debters[debter].amount, paid: false });
-                    newbill.unpaid.addToSet(user._id);
-                    newbill.save();
-                    console.log(debter + "adding ");
-                });
-        }
         
-        newbill.save();
-        response.send(newbill);
+        async.each(request.body.debters, function (debter, done) {
+            User.findOne( {username: debter.text}, function (error, user) {
+                if (error) console.log('Error in Saving bill: ' + request.user._id + " " + err);
+                newbill.group.addToSet({ user: user._id, amount: debter.amount, paid: false });
+                newbill.unpaid.addToSet(user._id);
+            }).exec(done);
+        }, function(err) {
+            newbill.save();  
+            response.send(newbill);
+        });
     });
 
 
