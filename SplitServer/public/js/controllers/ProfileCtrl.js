@@ -92,6 +92,18 @@ app.controller('ProfileController', function ($scope, $http, $location, $modal, 
                     console.log('Fail to get bills');
         });
     }
+$scope.payBill = function(bill) {
+        $http.put('/payBill', { bill: bill })
+            .success(function(response) {
+                if (response)
+                    $http.get('/getChargedBills').success(function(bills){
+                        console.log(bills)
+                        $scope.chargedBills = bills;
+                    });
+                else 
+                    console.log('Fail to get bills');
+        });
+    }
 
     $scope.checkUnpaid = function(user, bill){
         console.log('-----------------------------');
@@ -124,50 +136,6 @@ app.controller('ProfileController', function ($scope, $http, $location, $modal, 
             $log.info('Modal dismissed at: ' + new Date() + "create");
         });
     };
-
-});
-
-app.controller('ModalInstanceCtrl', function($scope, $modalInstance, bill, $http, $location) {
-    $scope.bill = bill;
-
-    $http.get('/auth').success(function(data) {
-        if (data == false)
-            $location.url('/');
-    });
-
-    $scope.debterList = [];
-
-    $http.get('/user').success(function(user) {
-        $scope.user = user;
-        $scope.friends = user.friends;
-        console.log($scope.friends);
-    });
-
-    $scope.createBill = function(subject, amount, debters) {
-        console.log('create')
-        console.log(debters);
-        $http.post('/createbill', {
-                subject: subject,
-                amount: amount,
-                debters: debters
-            })
-            .success(function(data) {
-                $location.url('/profile');
-            });
-        $modalInstance.close();
-    }
-
-    $scope.cancel = function() {
-        $modalInstance.dismiss('cancel');
-    };
-});
-
-app.controller('payBillModal', function($scope, $modal, $log) {
-    //$scope.pay = {
-    //    status: "",
-    //    method: ""
-    //}
-
 
     $scope.openPayBill = function(bill) {
 

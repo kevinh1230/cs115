@@ -1,3 +1,4 @@
+
 <div>
     <!-- Friend list -->
     <div class = "floatright">
@@ -25,7 +26,6 @@
         </ul>
         <!-- Bills Charged -->
         <div ng-show="tab.isSet(1)">
-            <div ng-controller="payBillModal">
                 <blockquote>
                     <div ng-repeat="bill in chargedBills">
                         <a href ng-click="openPayBill(bill)" ng-show="checkUnpaid(user,bill)">
@@ -33,11 +33,9 @@
                         </a>
                     </div>
                 </blockquote>
-            </div>
         </div>
         <!-- Bills Created -->
         <div ng-show="tab.isSet(2)">
-            <div ng-controller="ownedBills">
                 <blockquote>
                     <div ng-repeat="bill in ownedBills">
                         <a href ng-click="openOwnedBill(bill)">
@@ -45,11 +43,9 @@
                         </a>
                     </div>
                 </blockquote>
-            </div>
         </div>
         <!-- Bills Paid -->
         <div ng-show="tab.isSet(3)">
-            <div ng-controller="paidBills">
                 <blockquote>
                     <div ng-repeat="bill in chargedBills">
                         <a href ng-click="openPaidBill(bill)" ng-hide="checkUnpaid(user,bill)">
@@ -57,7 +53,6 @@
                         </a>
                     </div>
                 </blockquote>
-            </div>
         </div>
     </section>
 </div>
