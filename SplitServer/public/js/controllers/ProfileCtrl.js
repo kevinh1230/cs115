@@ -1,4 +1,27 @@
-var app = angular.module('ProfileCtrl', [])
+var app = angular.module('ProfileCtrl', ['ngTagsInput']).service('friends', function($http, $q) { 
+    var friends = [];
+            
+    this.load = function() {
+
+        $http.get('/user').success(function(user) {
+            for (var friend in user.friends){
+                var name = user.friends[friend].username;
+                friends.push({ text : name });
+            }
+        });
+        var deferred = $q.defer();
+        deferred.resolve(friends);
+        return deferred.promise;
+    };
+
+    this.clear = function() {
+        friends = [];
+    }
+
+    this.getFriends = function() {
+        return friends;
+    }
+})
 app.controller('ProfileController', function ($scope, $http, $location, $modal, $log) {
 
     this.tab = 1;
@@ -204,40 +227,59 @@ $scope.payBill = function(bill) {
 
         modalInstance.result.then(function() {
         }, function() {
+            //location.reload();
             $log.info('Modal dismissed at: ' + new Date());
         });
     };
 });
 
 //bill function controller
-app.controller('BillModalInstanceCtrl', function($scope, $modalInstance, bill, $http, $location) {
+app.controller('BillModalInstanceCtrl', function($scope, $modalInstance, bill, $http, $location, friends) {
     $scope.bill = bill;
 
-    $http.get('/auth').success(function(data) {
-        if (data == false)
+   $http.get('/auth').success(function(data) {
+        if(data == false)
             $location.url('/');
-    });
+        });
 
+    
     $scope.debterList = [];
+    $scope.loadFriends = function(query) {
+        var friendList = friends.load();
+        friends.clear();
+        return friendList;
+    }
 
-    $http.get('/user').success(function(user) {
-        $scope.user = user;
-        $scope.friends = user.friends;
-        console.log($scope.friends);
-    });
+    $scope.verifyTag = function(tag) {
+        console.log(tag.text);
+        var friendList = friends.getFriends();
+        if (!containsObject(tag, friendList)) {
+            var index = $scope.debterList.indexOf(tag);
+            if (index > -1)
+                $scope.debterList.splice(index, 1);
+        }
+        
+    }
 
-    $scope.createBill = function(subject, ammount, debters) {
+    $scope.createBill = function(subject, amount) {
         console.log('create')
-        console.log(debters);
-        $http.post('/createbill', {
-                subject: subject,
-                ammount: ammount,
-                debters: debters
-            })
+        console.log($scope.debterList);
+        var debters = $scope.debterList;
+        $http.post('/createbill', {subject : subject, amount : amount, debters : debters})
             .success(function(data) {
                 $location.url('/profile');
-            });
+             });
         $modalInstance.close();
+    }
+
+    function containsObject(obj, list) {
+       var i;
+        for (i = 0; i < list.length; i++) {
+            if (list[i].text === obj.text) {
+                return true;
+            }
+        }
+        return false;
     }
 
     $scope.payBillButton = function() {
@@ -246,8 +288,8 @@ app.controller('BillModalInstanceCtrl', function($scope, $modalInstance, bill, $
     };
 
     $scope.ok = function() {
-        $modalInstance.close();
-    };
+         $modalInstance.close();
+     };
 
     $scope.cancel = function() {
         $modalInstance.dismiss('cancel');
@@ -283,6 +325,7 @@ app.controller('UserModalInstanceCtrl', function($scope, $modalInstance, user, $
     };
 
     $scope.cancel = function() {
+        //location.reload();
         $modalInstance.dismiss('cancel');
     };
 });
