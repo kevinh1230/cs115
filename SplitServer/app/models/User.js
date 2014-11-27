@@ -12,8 +12,9 @@ var userSchema = mongoose.Schema({
 	friends:      [{ type: Schema.ObjectId, ref: 'User' }],
 	requests:	  [{ type: Schema.ObjectId, ref: 'User' }],
 	requested:    [{ type: Schema.ObjectId, ref: 'User' }],
-//	ownedBills:   [{type: String}],
-//	chargedBills: [{type: String}]
+	venmoToken:   {type : Object},
+	venmoAuthed:  {type : Boolean},
+
 })
 
 userSchema.methods.generateHash = function(password) {
