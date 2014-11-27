@@ -1,9 +1,21 @@
+<!---------------------------------------
+		index.html
+		
+	-top navigation bar
+	-link CSS and JS files
+----------------------------------------->
+
 <!doctype html>
+
+<!------------------------------ START HTML --------------------------------->
 <html lang="en" ng-app="sampleApp">
-<head>
+
+<head>	<!----- Links CSS and JS files to project -------->
+
 	<meta charset="UTF-8">
 	<base href="/">
 
+	<!-- Title -->
 	<title ng-bind="title + ' | Split'"></title>
 
 	<!-- CSS -->
@@ -20,7 +32,6 @@
 	<script src="libs/underscore/underscore-min.js"></script>
 	<script src="libs/ng-tags-input/ng-tags-input.min.js"></script>
 	
-
 	<!-- ANGULAR CUSTOM -->
 	<script src="js/controllers/MainCtrl.js"></script>
 	<script src="js/controllers/CreateBillCtrl.js"></script>
@@ -31,8 +42,10 @@
 	<script src="js/appRoutes.js"></script>
 	<script src="js/app.js"></script>
 	
-</head>
-<body>
+</head>	<!--------------------------------------------------->
+
+
+<body>	<!------------------ Nav Bar -------------------------->
 <div class="container">
 	
 	<!-- HEADER -->
@@ -40,15 +53,14 @@
 		<div class="navbar-header">
 			<a class="navbar-brand" href="/">Split Home</a>
 		</div>
-		<ul class="nav navbar-nav">
-			<li><a href="/profile">Profile</a></li>
-			<li><a href="/createbill">Create Bill</a></li>
-		</ul>
 	</nav>
 
 	<!-- ANGULAR DYNAMIC CONTENT -->
 	<div ng-view></div>
 
 </div>
-</body>
+</body>	<!--------------------------------------------------->
+
+
 </html>
+<!------------------------------------- END HTML ----------------------------->
