@@ -12,6 +12,7 @@ var billQuery = [{ path: 'paid', select: 'username'},
                  { path: 'group.user', select: 'username firstName lastName' }];
 
 var async = require('async');
+var _ = require('underscore');
 
 module.exports = function (app, passport) {
     // server routes ===========================================================
@@ -117,7 +118,7 @@ module.exports = function (app, passport) {
         newbill.owner = request.user;
         newbill.amount = request.body.amount;
         newbill.subject = request.body.subject;
-        
+ 
         async.each(request.body.debters, function (debter, done) {
             User.findOne( {username: debter.text}, function (error, user) {
                 if (error) console.log('Error in Saving bill: ' + request.user._id + " " + err);
@@ -130,47 +131,39 @@ module.exports = function (app, passport) {
         });
     });
 
+    app.put('/payBill', isLoggedIn, function (request, response) {
+        Bill.findById(request.body.bill._id).populate({ path: 'owner' }).exec( function(error, bill) {
+            if (error) response.send(500);
+            if (!bill) response.send(400);
+            
+            var charge = bill.group.filter(function(item) { 
+                return item.user.equals(request.user._id)
+            })[0];
 
-	app.put('/payBill', isLoggedIn, function (request, response) {
-
-		Bill.findById(request.body.bill._id, function(error, bill) {
-            if (bill.paid.indexOf(request.user._id) == -1){
-                bill.unpaid.remove(request.user);
-			    bill.paid.addToSet(request.user);
-                User.findOne({_id : bill.owner}, function (err, user) {
-                    if (err) console.log(err);
-                    console.log(user.venmoToken.id);
-                var token = request.user.venmoToken;
-                console.log(token.user.id);
-
-                var payment = {
-                    client_id: 2114,
-                    user_id: user.venmoToken.user.id,
-                    note: bill.subject,
-                    amount: bill.amount,
-                    access_token: token.access_token
-                }
-
-                console.log(payment);
-
-                requester.post({
-                    headers: {'content-type' : 'application/x-www-form-urlencoded'},
-                    url:     'https://api.venmo.com/v1/payments',
-                    form:    payment
-                }, function(error, res, body){
-                    console.log(body);
-                });
-                });
-                } else {
-                    console.log("avoided token request!!");
-                }
-
-
-			    bill.save();
-                response.send(200);
+            var token = request.user.venmoToken;
+            
+            var payment = {
+                client_id: 2214,
+                user_id: bill.owner.venmoToken.user.id,
+                note: bill.subject,
+                amount: charge.amount,
+                access_token: token.access_token
             }
-           
-		);
+            
+            requester.post({
+                headers: {'content-type' : 'application/x-www-form-urlencoded'},
+                url:     'https://api.venmo.com/v1/payments',
+                form:    payment
+            }, function(error, res, body){
+                bill.group[bill.group.indexOf(charge)].paid = true;
+                bill.save(function(error) {
+                    if (error) 
+                        response.send(400);
+                    else 
+                        response.send(200);
+                });
+            });
+        }); 
 	});
 
     // frontend routes =========================================================
