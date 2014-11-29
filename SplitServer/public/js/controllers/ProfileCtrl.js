@@ -115,18 +115,6 @@ app.controller('ProfileController', function ($scope, $http, $location, $modal, 
                     console.log('Fail to get bills');
         });
     }
-$scope.payBill = function(bill) {
-        $http.put('/payBill', { bill: bill })
-            .success(function(response) {
-                if (response)
-                    $http.get('/getChargedBills').success(function(bills){
-                        console.log(bills)
-                        $scope.chargedBills = bills;
-                    });
-                else 
-                    console.log('Fail to get bills');
-        });
-    }
 
     $scope.checkUnpaid = function(user, bill){
         console.log('-----------------------------');
@@ -283,8 +271,15 @@ app.controller('BillModalInstanceCtrl', function($scope, $modalInstance, bill, $
     }
 
     $scope.payBillButton = function() {
-        $scope.payBill(bill);
-        $modalInstance.close();
+        var confirmation = confirm("Are you sure you want to pay this bill?");
+        if(confirmation==true){
+            $scope.payBill(bill);
+            console.log("confirmed click")
+            $modalInstance.close();
+        } else {
+            console.log("unconfirmed")
+            $modalInstance.close();
+        }
     };
 
     $scope.ok = function() {
