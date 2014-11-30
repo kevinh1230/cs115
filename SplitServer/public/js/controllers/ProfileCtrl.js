@@ -57,7 +57,6 @@ app.controller('ProfileController', function ($scope, $http, $location, $modal, 
     });
 
 	$http.get('/getOwnedBills').success(function(bills){
-        console.log(bills);
 		$scope.ownedBills = bills;
 	})
 
@@ -125,12 +124,8 @@ app.controller('ProfileController', function ($scope, $http, $location, $modal, 
     }
 
     $scope.checkUnpaid = function(user, bill){
-        console.log('-----------------------------');
-        console.log(bill);
         return bill.group.some(function(friend) {
-            console.log(friend);
             if(!friend.paid && user._id == friend.user._id) {
-                console.log('NOT PAIDt');
                 return true;
             }
         });
@@ -175,7 +170,7 @@ app.controller('ProfileController', function ($scope, $http, $location, $modal, 
         });
     };
 
-     $scope.openOwnedBill = function(bill) {
+    $scope.openOwnedBill = function(bill) {
 
         var modalInstance = $modal.open({
             templateUrl: '/views/profileModal/ownedBills.html',
@@ -304,18 +299,33 @@ app.controller('BillModalInstanceCtrl', function($scope, $modalInstance, bill, $
 app.controller('UserModalInstanceCtrl', function($scope, $modalInstance, user, $http, $location) {
     $scope.user = user;
 
-    $scope.acceptFriend = function(friend) {
-    $http.put('/acceptFriend', {friend: friend})
-        .success(function(data) {
-            $scope.user = data.user;
-            $scope.message = data.message
-        })
-        .error(function(message) {
-            $scope.message = message;
+    $http.get('/getUsers', { params: { search: "Jesse" } })
+        .success(function(users) { 
+            $scope.users = users;
+            console.log(users)
         });
+    
+    $scope.searchFilter = function (obj) {
+        var input = $scope.search.input.$viewValue;
+        var regex = new RegExp(String(input).replace(/\s/g,""), 'i');
+        return !input ||
+                regex.test(obj.firstName + obj.lastName) || 
+                regex.test(obj.username);
+    }
+
+    $scope.acceptFriend = function(friend) {
+        $http.put('/acceptFriend', {friend: friend})
+            .success(function(data) {
+                $scope.user = data.user;
+                $scope.message = data.message
+            })
+            .error(function(message) {
+                $scope.message = message;
+            });
     }
 
     $scope.addFriend = function(friend) {
+        if (!friend._id) return console.log("User does not exist");
         $http.post('/addFriend', { friend: friend })
             .success(function(data) {
                 $scope.user = data.user;
@@ -324,12 +334,11 @@ app.controller('UserModalInstanceCtrl', function($scope, $modalInstance, user, $
             })
             .error(function (message) {
                 $scope.message = message;
+                $scope.aFriend = null;
             });
-        $scope.aFriend = null;
     };
 
     $scope.cancel = function() {
-        //location.reload();
         $modalInstance.dismiss('cancel');
     };
 });

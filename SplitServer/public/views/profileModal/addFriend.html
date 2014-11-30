@@ -4,16 +4,21 @@
 
 
 <!--------------------------------- START modal-body --------------------------------------->
-<div class="modal-body">	
+<script type="text/ng-template" id="customTemplate.html">
+    <a>
+        <span>{{match.label}}</span>
+        <i>({{match.model.username}})</i>
+    </a>
+</script>
 
+<div class="modal-body">	
     <h3>Add a friend</h3>
-		<form name = "addfriendform" novalidate ng-submit="addfriendform.$valid">
-			<fieldset class="form-group">
-				<input ng-model = "afriend" class="form-control" type = "text" placeholder="Username" title=" username" required />
-			</fieldset>
-			<button class="btn btn-primary" ng-click="addFriend(afriend)">Add</button>
-		</form>
-	
+        <form name=search >
+            <fieldset class="form-group">
+                <input class="form-control" name="input" type="text" placeholder="Find a Friend" ng-model="searchUser" typeahead="user as user.firstName + ' ' + user.lastName  for user in users | filter:searchFilter" typeahead-template-url="customTemplate.html" required/>
+            </fieldset>
+            <button class="btn btn-primary"  ng-disabled="!searchUser" ng-click="addFriend(searchUser)">Add</button>
+        </form>
     <hr>
 	
 	<h3>Friend requests</h3>

@@ -39,10 +39,7 @@ module.exports = function () {
     });
 
     router.post('/addFriend', function (request, response) {
-        console.log(request.body.friend);
-        User.findOne({
-            username: request.body.friend
-        }, function (error, friend) {
+        User.findOne(request.body.friend, function (error, friend) {
             if (error) {
                 console.log(error);
                 return response.json(500, {  text: 'Request Error', type: 'danger' });
