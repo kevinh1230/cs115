@@ -27,6 +27,24 @@ module.exports = function (app, passport) {
     }));
 
 
+    app.get('/getUsers', function(request, response) {
+        User.find({}, { username: 1, firstName: 1, lastName: 1 })
+            .exec(function(error, users) {
+                if (error) response.send(500);
+                else response.json(users);
+            });
+/*        console.log(request.query.search);
+        var search = '^(' + request.query.search + ')';
+        User.find({ $or: [ { username:  { $regex: search, $options:'i' } },
+                           { firstName: { $regex: search, $options:'i' } },
+                           { lastName:  { $regex: search, $options:'i' } } ] },
+                  { username: 1, firstName: 1, lastName: 1 })
+            .exec(function(error, users) {
+                console.log(error,users);
+                response.json(users);
+            }); */
+    });
+
     app.post('/login', function(request, response) {
         passport.authenticate('local-login', function(error, user, info) {
             if (error) return response.send(500);
