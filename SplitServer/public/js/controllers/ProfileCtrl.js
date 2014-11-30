@@ -34,6 +34,14 @@ app.controller('ProfileController', function ($scope, $http, $location, $modal, 
       return this.tab === tabName;
     };
 
+    this.setButton = function(newButtonValue){
+      this.activeButton = newButtonValue;
+    };
+
+    this.isSetButton = function(buttonName){
+      return this.activeButton === buttonName;
+    };
+
     $http.get('/user').success(function(user) {
         $scope.user = user;
         if (!user.venmoAuthed) {
@@ -223,9 +231,10 @@ app.controller('ProfileController', function ($scope, $http, $location, $modal, 
 
 //bill function controller
 app.controller('BillModalInstanceCtrl', function($scope, $modalInstance, bill, $http, $location, friends) {
+
     $scope.bill = bill;
 
-   $http.get('/auth').success(function(data) {
+    $http.get('/auth').success(function(data) {
         if(data == false)
             $location.url('/');
         });
