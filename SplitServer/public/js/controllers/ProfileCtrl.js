@@ -265,7 +265,7 @@ app.controller('BillModalInstanceCtrl', function($scope, $modalInstance, bill, $
     }
 
     $scope.deleteBill = function() {
-	    $http.delete('/deleteBill/' + $scope.bill)
+	    $http.post('/deleteBill', { bill: $scope.bill })
 	        .success(function(data) {
                 $modalInstance.close();
 	        })
@@ -276,7 +276,8 @@ app.controller('BillModalInstanceCtrl', function($scope, $modalInstance, bill, $
 
     $scope.updateBill = function(subject, amount) {
         var debters = $scope.debterList;
-        $http.delete('/deleteBill/' + $scope.bill).success(function() {
+        console.log($scope.bill);
+        $http.post('/deleteBill', { bill: $scope.bill }).success(function() {
             $http.post('/createbill', {subject : subject, amount : amount, debters : debters})
                  .success(function(data) {
                     $modalInstance.close();
@@ -315,8 +316,7 @@ app.controller('BillModalInstanceCtrl', function($scope, $modalInstance, bill, $
     $scope.edit = function () {
         $scope.editBill = true;
         $scope.subject = bill.subject;
-        console.log($scope.bill);
-        $scope.amount = bill. amount;
+        $scope.amount = bill.amount;
         $scope.bill.group.forEach(function(charge) {
             $scope.debterList.push({ 'text': charge.user.username, 'amount': charge.amount });
         });
