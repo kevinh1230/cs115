@@ -131,6 +131,13 @@ module.exports = function (app, passport) {
         });
     });
 
+    app.delete('/deleteBill/:bill', isLoggedIn, function(request,response) {
+        Bill.remove(request.params.bill, function(error, data) {
+            if (error) response.send(500)
+            else response.send(200);
+        });
+    });
+
     app.post('/createbill', isLoggedIn, function (request, response) {
         var newbill = new Bill();
         newbill.owner = request.user;

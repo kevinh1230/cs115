@@ -255,6 +255,32 @@ app.controller('BillModalInstanceCtrl', function($scope, $modalInstance, bill, $
         $modalInstance.close();
     }
 
+    $scope.deleteBill = function() {
+	    $http.delete('/deleteBill/' + $scope.bill)
+	        .success(function(data) {
+                $modalInstance.close();
+	        })
+            .error(function (message) {
+                $scope.message = message;
+            });
+    }
+
+    $scope.updateBill = function(subject, amount) {
+        var debters = $scope.debterList;
+        $http.delete('/deleteBill/' + $scope.bill).success(function() {
+            $http.post('/createbill', {subject : subject, amount : amount, debters : debters})
+                 .success(function(data) {
+                    $modalInstance.close();
+                 })
+                 .error(function(message) {
+                    $scope.message = message;
+                 });
+        })
+        .error(function(message) {
+            $scope.message = message;
+        });
+    }
+
     function containsObject(obj, list) {
        var i;
         for (i = 0; i < list.length; i++) {
@@ -276,9 +302,18 @@ app.controller('BillModalInstanceCtrl', function($scope, $modalInstance, bill, $
             $modalInstance.close();
         }
     };
-
+    
+    $scope.edit = function () {
+        $scope.editBill = true;
+        $scope.subject = bill.subject;
+        console.log($scope.bill);
+        $scope.amount = bill. amount;
+        $scope.bill.group.forEach(function(charge) {
+            $scope.debterList.push({ 'text': charge.user.username, 'amount': charge.amount });
+        });
+    }
     $scope.ok = function() {
-         $modalInstance.close();
+        $modalInstance.close();
      };
 
     $scope.cancel = function() {
