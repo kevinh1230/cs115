@@ -34,6 +34,8 @@ app.controller('ProfileController', function ($scope, $http, $location, $modal, 
       return this.tab === tabName;
     };
 
+    this.activeButton = 1;
+
     this.setButton = function(newButtonValue){
       this.activeButton = newButtonValue;
     };
