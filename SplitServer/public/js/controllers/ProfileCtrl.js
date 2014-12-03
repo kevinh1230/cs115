@@ -34,6 +34,16 @@ app.controller('ProfileController', function ($scope, $http, $location, $modal, 
       return this.tab === tabName;
     };
 
+    this.activeButton = 1;
+
+    this.setButton = function(newButtonValue){
+      this.activeButton = newButtonValue;
+    };
+
+    this.isSetButton = function(buttonName){
+      return this.activeButton === buttonName;
+    };
+
     $http.get('/user').success(function(user) {
         $scope.user = user;
         if (!user.venmoAuthed) {
@@ -49,7 +59,6 @@ app.controller('ProfileController', function ($scope, $http, $location, $modal, 
     });
 
 	$http.get('/getOwnedBills').success(function(bills){
-        console.log(bills);
 		$scope.ownedBills = bills;
 	})
 
@@ -115,26 +124,10 @@ app.controller('ProfileController', function ($scope, $http, $location, $modal, 
                     console.log('Fail to get bills');
         });
     }
-$scope.payBill = function(bill) {
-        $http.put('/payBill', { bill: bill })
-            .success(function(response) {
-                if (response)
-                    $http.get('/getChargedBills').success(function(bills){
-                        console.log(bills)
-                        $scope.chargedBills = bills;
-                    });
-                else 
-                    console.log('Fail to get bills');
-        });
-    }
 
     $scope.checkUnpaid = function(user, bill){
-        console.log('-----------------------------');
-        console.log(bill);
         return bill.group.some(function(friend) {
-            console.log(friend);
             if(!friend.paid && user._id == friend.user._id) {
-                console.log('NOT PAIDt');
                 return true;
             }
         });
@@ -179,7 +172,7 @@ $scope.payBill = function(bill) {
         });
     };
 
-     $scope.openOwnedBill = function(bill) {
+    $scope.openOwnedBill = function(bill) {
 
         var modalInstance = $modal.open({
             templateUrl: '/views/profileModal/ownedBills.html',
@@ -235,9 +228,10 @@ $scope.payBill = function(bill) {
 
 //bill function controller
 app.controller('BillModalInstanceCtrl', function($scope, $modalInstance, bill, $http, $location, friends) {
+
     $scope.bill = bill;
 
-   $http.get('/auth').success(function(data) {
+    $http.get('/auth').success(function(data) {
         if(data == false)
             $location.url('/');
         });
@@ -272,6 +266,33 @@ app.controller('BillModalInstanceCtrl', function($scope, $modalInstance, bill, $
         $modalInstance.close();
     }
 
+    $scope.deleteBill = function() {
+	    $http.post('/deleteBill', { bill: $scope.bill })
+	        .success(function(data) {
+                $modalInstance.close();
+	        })
+            .error(function (message) {
+                $scope.message = message;
+            });
+    }
+
+    $scope.updateBill = function(subject, amount) {
+        var debters = $scope.debterList;
+        console.log($scope.bill);
+        $http.post('/deleteBill', { bill: $scope.bill }).success(function() {
+            $http.post('/createbill', {subject : subject, amount : amount, debters : debters})
+                 .success(function(data) {
+                    $modalInstance.close();
+                 })
+                 .error(function(message) {
+                    $scope.message = message;
+                 });
+        })
+        .error(function(message) {
+            $scope.message = message;
+        });
+    }
+
     function containsObject(obj, list) {
        var i;
         for (i = 0; i < list.length; i++) {
@@ -283,12 +304,27 @@ app.controller('BillModalInstanceCtrl', function($scope, $modalInstance, bill, $
     }
 
     $scope.payBillButton = function() {
-        $scope.payBill(bill);
-        $modalInstance.close();
+        var confirmation = confirm("Are you sure you want to pay this bill?");
+        if(confirmation==true){
+            $scope.payBill(bill);
+            console.log("confirmed click")
+            $modalInstance.close();
+        } else {
+            console.log("unconfirmed")
+            $modalInstance.close();
+        }
     };
-
+    
+    $scope.edit = function () {
+        $scope.editBill = true;
+        $scope.subject = bill.subject;
+        $scope.amount = bill.amount;
+        $scope.bill.group.forEach(function(charge) {
+            $scope.debterList.push({ 'text': charge.user.username, 'amount': charge.amount });
+        });
+    }
     $scope.ok = function() {
-         $modalInstance.close();
+        $modalInstance.close();
      };
 
     $scope.cancel = function() {
@@ -300,18 +336,33 @@ app.controller('BillModalInstanceCtrl', function($scope, $modalInstance, bill, $
 app.controller('UserModalInstanceCtrl', function($scope, $modalInstance, user, $http, $location) {
     $scope.user = user;
 
-    $scope.acceptFriend = function(friend) {
-    $http.put('/acceptFriend', {friend: friend})
-        .success(function(data) {
-            $scope.user = data.user;
-            $scope.message = data.message
-        })
-        .error(function(message) {
-            $scope.message = message;
+    $http.get('/getUsers', { params: { search: "Jesse" } })
+        .success(function(users) { 
+            $scope.users = users;
+            console.log(users)
         });
+    
+    $scope.searchFilter = function (obj) {
+        var input = $scope.search.input.$viewValue;
+        var regex = new RegExp(String(input).replace(/\s/g,""), 'i');
+        return !input ||
+                regex.test(obj.firstName + obj.lastName) || 
+                regex.test(obj.username);
+    }
+
+    $scope.acceptFriend = function(friend) {
+        $http.put('/acceptFriend', {friend: friend})
+            .success(function(data) {
+                $scope.user = data.user;
+                $scope.message = data.message
+            })
+            .error(function(message) {
+                $scope.message = message;
+            });
     }
 
     $scope.addFriend = function(friend) {
+        if (!friend._id) return console.log("User does not exist");
         $http.post('/addFriend', { friend: friend })
             .success(function(data) {
                 $scope.user = data.user;
@@ -320,12 +371,11 @@ app.controller('UserModalInstanceCtrl', function($scope, $modalInstance, user, $
             })
             .error(function (message) {
                 $scope.message = message;
+                $scope.aFriend = null;
             });
-        $scope.aFriend = null;
     };
 
     $scope.cancel = function() {
-        //location.reload();
         $modalInstance.dismiss('cancel');
     };
 });
