@@ -124,7 +124,25 @@ app.controller('ProfileController', function ($scope, $http, $location, $modal, 
                     console.log('Fail to get bills');
         });
     }
-    
+
+    $scope.createBill = function(subject, amount, debters){
+        //debterList = [];
+        console.log('create');
+        //console.log(debterList);
+        //var debters = debterList;
+        $http.post('/createbill', {subject : subject, amount : amount, debters : debters})
+            .success(function(response) {
+                console.log(response); 
+                    if (response) 
+                        $http.get('/getOwnedBills').success(function(bills){
+                            console.log(bills)
+                            $scope.ownedBills = bills
+                        });
+                    console.log(response);
+             });
+        console.log("inprofctrl");
+        }
+
     $scope.deleteBill = function(bill) {
 	    $http.post('/deleteBill', { bill: bill })
 	        .success(function(response) {
@@ -151,6 +169,7 @@ app.controller('ProfileController', function ($scope, $http, $location, $modal, 
         var modalInstance = $modal.open({
             templateUrl: '/views/profileModal/createBill.html',
             controller: 'BillModalInstanceCtrl',
+            scope: $scope,
             resolve: {
                 bill: function() {
                     return $scope.bill;
@@ -273,14 +292,16 @@ app.controller('BillModalInstanceCtrl', function($scope, $modalInstance, bill, $
         
     }
 
-    $scope.createBill = function(subject, amount) {
-        console.log('create')
-        console.log($scope.debterList);
-        var debters = $scope.debterList;
-        $http.post('/createbill', {subject : subject, amount : amount, debters : debters})
-            .success(function(data) {
-                $location.url('/profile');
-             });
+    $scope.createBillButton = function(subject, amount) {
+        // console.log('create')
+        // console.log($scope.debterList);
+         var debters = $scope.debterList;
+        // $http.post('/createbill', {subject : subject, amount : amount, debters : debters})
+        //     .success(function(data) {
+        //         $location.url('/profile');
+        //      });
+        $scope.createBill(subject,amount, debters);
+        console.log("inBillModalInstanceCtrl");
         $modalInstance.close();
     }
 
