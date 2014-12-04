@@ -24,14 +24,14 @@ var app = angular.module('ProfileCtrl', ['ngTagsInput']).service('friends', func
 })
 app.controller('ProfileController', function ($scope, $http, $location, $modal, $log) {
 
-    this.tab = 1;
+    $scope.tab = 1;
 
-    this.setTab = function(newValue){
-      this.tab = newValue;
+    $scope.setTab = function(newValue){
+      $scope.tab = newValue;
     };
 
-    this.isSet = function(tabName){
-      return this.tab === tabName;
+    $scope.isSet = function(tabName){
+      return $scope.tab === tabName;
     };
 
     this.activeButton = 1;
@@ -105,12 +105,36 @@ app.controller('ProfileController', function ($scope, $http, $location, $modal, 
 	        $scope.dFriend = null;
 	}
 
+   $scope.clearBill = function() {
+        $scope.ownedBills = [];
+        $scope.chargedBills = [];
+   }
 	$scope.logout = function() {
         $http.get('/logout')
             .success(function() {
                 $location.url('/');			 
         });
 	}
+
+    $scope.createBill = function(subject, amount, debterList) {
+        console.log('create')
+        console.log($scope.debterList);
+        var debters = debterList;
+        $http.post('/createbill', {subject : subject, amount : amount, debters : debters})
+            .success(function(data) {
+                $http.get('/getOwnedBills').success(function(bills){
+                    console.log(bills)
+                    $scope.ownedBills = bills;
+                    return true;
+                })
+                .error(function () {
+                    return false
+                });
+             })
+             .error(function () {
+                return false;   
+             });
+    }
 
     $scope.payBill = function(bill) {
         $http.put('/payBill', { bill: bill })
@@ -151,6 +175,7 @@ app.controller('ProfileController', function ($scope, $http, $location, $modal, 
         var modalInstance = $modal.open({
             templateUrl: '/views/profileModal/createBill.html',
             controller: 'BillModalInstanceCtrl',
+            scope: $scope,
             resolve: {
                 bill: function() {
                     return $scope.bill;
@@ -254,7 +279,6 @@ app.controller('BillModalInstanceCtrl', function($scope, $modalInstance, bill, $
             $location.url('/');
         });
 
-    
     $scope.debterList = [];
     $scope.loadFriends = function(query) {
         var friendList = friends.load();
@@ -273,16 +297,12 @@ app.controller('BillModalInstanceCtrl', function($scope, $modalInstance, bill, $
         
     }
 
-    $scope.createBill = function(subject, amount) {
-        console.log('create')
-        console.log($scope.debterList);
-        var debters = $scope.debterList;
-        $http.post('/createbill', {subject : subject, amount : amount, debters : debters})
-            .success(function(data) {
-                $location.url('/profile');
-             });
-        $modalInstance.close();
+    $scope.createBillButton = function(subject, ammount) {
+        var success = $scope.createBill(subject, ammount, $scope.debterList);
+        if (success)
+            $modalInstance.close();
     }
+    
 
     $scope.deleteBillButton = function() {
         $scope.deleteBill(bill);
