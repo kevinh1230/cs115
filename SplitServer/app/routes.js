@@ -132,10 +132,12 @@ module.exports = function (app, passport) {
     });
 
     app.post('/deleteBill', isLoggedIn, function(request,response) {
-        Bill.remove({ _id: request.body.bill._id }, function(error, data) {
-            if (error) response.send(500)
-            else response.send(200);
-        });
+        Bill.remove({ _id: request.body.bill._id ,'group.paid': { $ne: true } },
+            function(error, data) {
+                if (error) return response.send(500);
+                if (!data) response.send(400);
+                else response.send(200);
+            });
     });
 
     app.post('/createbill', isLoggedIn, function (request, response) {

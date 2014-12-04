@@ -231,6 +231,12 @@ app.controller('BillModalInstanceCtrl', function($scope, $modalInstance, bill, $
 
     $scope.bill = bill;
 
+    $scope.modifiable = function() {
+        return bill.group.some( function(e) {
+            return e.paid;
+        });
+    }
+
     $http.get('/auth').success(function(data) {
         if(data == false)
             $location.url('/');
