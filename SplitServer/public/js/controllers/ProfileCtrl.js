@@ -148,154 +148,172 @@ app.controller('ProfileController', function ($scope, $http, $location, $modal, 
                     console.log('Fail to get bills');
         });
     }
-    
-    $scope.deleteBill = function(bill) {
-	    $http.post('/deleteBill', { bill: bill })
-	        .success(function(response) {
+
+    $scope.createBill = function(subject, amount, debters){
+        //debterList = [];
+        console.log('create');
+        //console.log(debterList);
+        //var debters = debterList;
+        $http.post('/createbill', {subject : subject, amount : amount, debters : debters})
+            .success(function(response) {
                 console.log(response); 
-                if (response) 
-                    $http.get('/getOwnedBills').success(function(bills){
-                        console.log(bills)
-                        $scope.ownedBills = bills;
-                    });
-            });
-    }
-    $scope.checkUnpaid = function(user, bill){
-        return bill.group.some(function(friend) {
-            if(!friend.paid && user._id == friend.user._id) {
-                return true;
-            }
-        });
+                    if (response) 
+                        $http.get('/getOwnedBills').success(function(bills){
+                            console.log(bills)
+                            $scope.ownedBills = bills
+                        });
+                console.log(response);
+         });
+    console.log("inprofctrl");
     }
 
-    //code to open modals
+$scope.deleteBill = function(bill) {
+    $http.post('/deleteBill', { bill: bill })
+        .success(function(response) {
+            console.log(response); 
+            if (response) 
+                $http.get('/getOwnedBills').success(function(bills){
+                    console.log(bills)
+                    $scope.ownedBills = bills;
+                });
+        });
+}
+$scope.checkUnpaid = function(user, bill){
+    return bill.group.some(function(friend) {
+        if(!friend.paid && user._id == friend.user._id) {
+            return true;
+        }
+    });
+}
 
-    $scope.openCreateBill = function() {
+//code to open modals
 
-        var modalInstance = $modal.open({
-            templateUrl: '/views/profileModal/createBill.html',
-            controller: 'BillModalInstanceCtrl',
-            scope: $scope,
-            resolve: {
-                bill: function() {
-                    return $scope.bill;
-                }
+$scope.openCreateBill = function() {
+
+    var modalInstance = $modal.open({
+        templateUrl: '/views/profileModal/createBill.html',
+        controller: 'BillModalInstanceCtrl',
+        scope: $scope,
+        resolve: {
+            bill: function() {
+                return $scope.bill;
             }
-        });
+        }
+    });
 
-        modalInstance.result.then(function() {
-        }, function() {
-            $log.info('Modal dismissed at: ' + new Date() + "create");
-        });
-    };
+    modalInstance.result.then(function() {
+    }, function() {
+        $log.info('Modal dismissed at: ' + new Date() + "create");
+    });
+};
 
-    $scope.openPayBill = function(bill) {
+$scope.openPayBill = function(bill) {
 
-        var modalInstance = $modal.open({
-            templateUrl: '/views/profileModal/payBillModal.html',
-            controller: 'BillModalInstanceCtrl',
-            scope: $scope,
-            resolve: {
-                bill: function() {
-                    return bill;
-                }
+    var modalInstance = $modal.open({
+        templateUrl: '/views/profileModal/payBillModal.html',
+        controller: 'BillModalInstanceCtrl',
+        scope: $scope,
+        resolve: {
+            bill: function() {
+                return bill;
             }
-        });
+        }
+    });
 
-        modalInstance.result.then(function() {
-        }, function() {
-            $log.info('Modal dismissed at: ' + new Date());
-        });
-    };
+    modalInstance.result.then(function() {
+    }, function() {
+        $log.info('Modal dismissed at: ' + new Date());
+    });
+};
 
-    $scope.openOwnedBill = function(bill) {
+$scope.openOwnedBill = function(bill) {
 
-        var modalInstance = $modal.open({
-            templateUrl: '/views/profileModal/ownedBills.html',
-            controller: 'BillModalInstanceCtrl',
-            scope: $scope,
-            resolve: {
-                bill: function() {
-                    return bill;
-                }
+    var modalInstance = $modal.open({
+        templateUrl: '/views/profileModal/ownedBills.html',
+        controller: 'BillModalInstanceCtrl',
+        scope: $scope,
+        resolve: {
+            bill: function() {
+                return bill;
             }
-        });
+        }
+    });
 
-        modalInstance.result.then(function() {}, function() {
-            $log.info('Modal dismissed at: ' + new Date());
-        });
-    };
+    modalInstance.result.then(function() {}, function() {
+        $log.info('Modal dismissed at: ' + new Date());
+    });
+};
 
-    $scope.openPaidBill = function(bill) {
+$scope.openPaidBill = function(bill) {
 
-        var modalInstance = $modal.open({
-            templateUrl: '/views/profileModal/paidBills.html',
-            controller: 'BillModalInstanceCtrl',
-            resolve: {
-                bill: function() {
-                    return bill;
-                }
+    var modalInstance = $modal.open({
+        templateUrl: '/views/profileModal/paidBills.html',
+        controller: 'BillModalInstanceCtrl',
+        resolve: {
+            bill: function() {
+                return bill;
             }
-        });
+        }
+    });
 
-        modalInstance.result.then(function() {}, function() {
-            $log.info('Modal dismissed at: ' + new Date());
-        });
-    };
+    modalInstance.result.then(function() {}, function() {
+        $log.info('Modal dismissed at: ' + new Date());
+    });
+};
 
-    $scope.openAddFriend = function() {
+$scope.openAddFriend = function() {
 
-        var modalInstance = $modal.open({
-            templateUrl: '/views/profileModal/addFriend.html',
-            controller: 'UserModalInstanceCtrl',
-            resolve: {
-                user: function() {
-                    return $scope.user;
-                }
+    var modalInstance = $modal.open({
+        templateUrl: '/views/profileModal/addFriend.html',
+        controller: 'UserModalInstanceCtrl',
+        resolve: {
+            user: function() {
+                return $scope.user;
             }
-        });
+        }
+    });
 
-        modalInstance.result.then(function() {
-        }, function() {
-            //location.reload();
-            $log.info('Modal dismissed at: ' + new Date());
-        });
-    };
+    modalInstance.result.then(function() {
+    }, function() {
+        //location.reload();
+        $log.info('Modal dismissed at: ' + new Date());
+    });
+};
 });
 
 //bill function controller
 app.controller('BillModalInstanceCtrl', function($scope, $modalInstance, bill, $http, $location, friends) {
 
-    $scope.bill = bill;
+$scope.bill = bill;
 
-    $scope.modifiable = function() {
-        return bill.group.some( function(e) {
-            return e.paid;
-        });
+$scope.modifiable = function() {
+    return bill.group.some( function(e) {
+        return e.paid;
+    });
+}
+
+$http.get('/auth').success(function(data) {
+    if(data == false)
+        $location.url('/');
+    });
+
+$scope.debterList = [];
+$scope.loadFriends = function(query) {
+    var friendList = friends.load();
+    friends.clear();
+    return friendList;
+}
+
+$scope.verifyTag = function(tag) {
+    console.log(tag.text);
+    var friendList = friends.getFriends();
+    if (!containsObject(tag, friendList)) {
+        var index = $scope.debterList.indexOf(tag);
+        if (index > -1)
+            $scope.debterList.splice(index, 1);
     }
-
-    $http.get('/auth').success(function(data) {
-        if(data == false)
-            $location.url('/');
-        });
-
-    $scope.debterList = [];
-    $scope.loadFriends = function(query) {
-        var friendList = friends.load();
-        friends.clear();
-        return friendList;
-    }
-
-    $scope.verifyTag = function(tag) {
-        console.log(tag.text);
-        var friendList = friends.getFriends();
-        if (!containsObject(tag, friendList)) {
-            var index = $scope.debterList.indexOf(tag);
-            if (index > -1)
-                $scope.debterList.splice(index, 1);
-        }
-        
-    }
+    
+}
 
     $scope.createBillButton = function(subject, ammount) {
         var success = $scope.createBill(subject, ammount, $scope.debterList);

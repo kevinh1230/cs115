@@ -3,6 +3,10 @@ var Bill = require('../app/models/Bill');
 var mongoose = require('mongoose');
 var requester = require('request');
 
+var accountSid = 'ACc82a340f825c9497a289fa23cfb45687';
+var authToken = "6bb6791bad8fa0cc270184fd2762e7e2";
+var client = require('twilio')(accountSid, authToken);
+
 var query = [{ path: 'friends', select: 'username' }, 
 			 { path: 'requests', select: 'username' },
 			 { path: 'requested', select: 'username' }];
@@ -22,7 +26,7 @@ module.exports = function (app, passport) {
     // Login Authentication and Signup Routes ==================================
     // Handles user authentication and profiles
     app.post('/signup', passport.authenticate('local-signup', {
-        successRedirect: 'https://api.venmo.com/v1/oauth/authorize?client_id=2114&scope=make_payments%20access_profile%20access_email%20access_phone%20access_balance&response_type=code',
+        successRedirect: 'https://api.venmo.com/v1/oauth/authorize?client_id=2178&scope=make_payments%20access_profile%20access_email%20access_phone%20access_balance&response_type=code',
         failureRedirect: '/signup',
     }));
 
@@ -82,8 +86,8 @@ module.exports = function (app, passport) {
     app.post('/accesstoken', function(request, response) {
         if (!request.user.venmoAuthed) {
         var code = request.body.code;
-        var client_id = "2114";
-        var client_secret = "nsWqxLQzYcVkFJepqtGyqun6UfvRWWV9";
+        var client_id = "2178";
+        var client_secret = "kxsnYhuUwwpaLNfXq8hbGWGta7cssQCv";
 
         var data = {
             client_id: client_id,
@@ -98,7 +102,6 @@ module.exports = function (app, passport) {
         }, function(error, res, body){
             User.findOne({username: request.user.username}, function (error, user) {
                 if (error) console.log ("error in saving venmo token " + request.user._id + " " + error);
-                console.log(body.id);
                 var token = JSON.parse(body);
                 if (!token.hasOwnProperty('error')) {
                     user.venmoToken = token;
@@ -106,6 +109,7 @@ module.exports = function (app, passport) {
                     user.save();
                 }
             })
+            console.log(JSON.parse(body));
             response.send(body);
         }); } else {
             console.log("avoided token request!!");
@@ -166,11 +170,11 @@ module.exports = function (app, passport) {
             var charge = bill.group.filter(function(item) { 
                 return item.user.equals(request.user._id)
             })[0];
-
             var token = request.user.venmoToken;
-            
+            console.log(request.user);
+            var client_phone = "+" + token.user.phone;
             var payment = {
-                client_id: 2214,
+                client_id: 2178,
                 user_id: bill.owner.venmoToken.user.id,
                 note: bill.subject,
                 amount: charge.amount,
@@ -186,8 +190,36 @@ module.exports = function (app, passport) {
                 bill.save(function(error) {
                     if (error) 
                         response.send(400);
-                    else 
+                    else {
+                        
+                        retrieveUser(bill.owner, function(err, user){
+
+                            var billOwner_phone = "+" + user.venmoToken.user.phone;
+                            var payer_message = "You paid " + user.firstName + " $" + bill.group[bill.group.indexOf(charge)].amount + ".";
+                            var owner_message = request.user.firstName + " paid you $" + bill.group[bill.group.indexOf(charge)].amount + ".";
+                            if (err) {
+                                console.log(err);
+                            }
+
+                            client.messages.create({
+                                body: payer_message,
+                                to: client_phone,
+                                from: "+19253489105",
+                            }, function(err, message) {
+                                client.messages.create({
+                                body: owner_message,
+                                to: billOwner_phone,
+                                from: "+19253489105",
+                            }, function(err, message) {
+                                
+                            });
+                                
+                            });
+
+                            
+                        }) 
                         response.send(200);
+                    } 
                 });
             });
         }); 
@@ -198,6 +230,16 @@ module.exports = function (app, passport) {
     app.get('*', function (request, response) {
         response.sendfile('./public/index.html');
     });
+};
+
+function retrieveUser(userObjectId, callback) {
+  User.find({_id: userObjectId}, function(err, users) {
+    if (err) {
+      callback(err, null);
+    } else {
+      callback(null, users[0]);
+    }
+  });
 };
 
 function isLoggedIn(request, response, next) {

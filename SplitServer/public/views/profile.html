@@ -44,8 +44,12 @@
             <div ng-show="isSet(1)">
                     <blockquote>
                         <div ng-repeat="bill in chargedBills">
-                            <a href ng-click="openPayBill(bill)" ng-show="checkUnpaid(user,bill)">
+                            <!-- <a href ng-click="openPayBill(bill)" ng-show="checkUnpaid(user,bill)">
                                 <label>{{bill.subject}} - {{bill.amount | currency}}</label>
+                            </a> -->
+
+                            <a ng-repeat = "friend in bill.group" href ng-click="openPayBill(bill)" ng-show="checkUnpaid(user,bill)">
+                                <label ng-show = "user.username == friend.user.username">{{bill.subject}} - {{friend.amount | currency}}  </label>
                             </a>
                         </div>
                     </blockquote>
@@ -65,9 +69,14 @@
             <div ng-show="isSet(3)">
                     <blockquote>
                         <div ng-repeat="bill in chargedBills">
-                            <a href ng-click="openPaidBill(bill)" ng-hide="checkUnpaid(user,bill)">
+                            <!-- <a href ng-click="openPaidBill(bill)" ng-hide="checkUnpaid(user,bill)">
                                 <label>{{bill.subject}} - {{bill.amount | currency}}</label>
+                            </a> -->
+
+                            <a ng-repeat = "friend in bill.group" href ng-click="openPayBill(bill)" ng-hide="checkUnpaid(user,bill)">
+                                <label ng-show = "user.username == friend.user.username">{{bill.subject}} - {{friend.amount | currency}}  </label>
                             </a>
+
                         </div>
                     </blockquote>
             </div>
