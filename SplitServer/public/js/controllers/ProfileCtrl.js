@@ -125,6 +125,35 @@ app.controller('ProfileController', function ($scope, $http, $location, $modal, 
         });
     }
 
+    $scope.createBill = function(subject, amount, debters){
+        //debterList = [];
+        console.log('create');
+        //console.log(debterList);
+        //var debters = debterList;
+        $http.post('/createbill', {subject : subject, amount : amount, debters : debters})
+            .success(function(response) {
+                console.log(response); 
+                    if (response) 
+                        $http.get('/getOwnedBills').success(function(bills){
+                            console.log(bills)
+                            $scope.ownedBills = bills
+                        });
+                    console.log(response);
+             });
+        console.log("inprofctrl");
+        }
+
+    $scope.deleteBill = function(bill) {
+	    $http.post('/deleteBill', { bill: bill })
+	        .success(function(response) {
+                console.log(response); 
+                if (response) 
+                    $http.get('/getOwnedBills').success(function(bills){
+                        console.log(bills)
+                        $scope.ownedBills = bills;
+                    });
+            });
+    }
     $scope.checkUnpaid = function(user, bill){
         return bill.group.some(function(friend) {
             if(!friend.paid && user._id == friend.user._id) {
@@ -140,6 +169,7 @@ app.controller('ProfileController', function ($scope, $http, $location, $modal, 
         var modalInstance = $modal.open({
             templateUrl: '/views/profileModal/createBill.html',
             controller: 'BillModalInstanceCtrl',
+            scope: $scope,
             resolve: {
                 bill: function() {
                     return $scope.bill;
@@ -177,6 +207,7 @@ app.controller('ProfileController', function ($scope, $http, $location, $modal, 
         var modalInstance = $modal.open({
             templateUrl: '/views/profileModal/ownedBills.html',
             controller: 'BillModalInstanceCtrl',
+            scope: $scope,
             resolve: {
                 bill: function() {
                     return bill;
@@ -261,25 +292,22 @@ app.controller('BillModalInstanceCtrl', function($scope, $modalInstance, bill, $
         
     }
 
-    $scope.createBill = function(subject, amount) {
-        console.log('create')
-        console.log($scope.debterList);
-        var debters = $scope.debterList;
-        $http.post('/createbill', {subject : subject, amount : amount, debters : debters})
-            .success(function(data) {
-                $location.url('/profile');
-             });
+    $scope.createBillButton = function(subject, amount) {
+        // console.log('create')
+        // console.log($scope.debterList);
+         var debters = $scope.debterList;
+        // $http.post('/createbill', {subject : subject, amount : amount, debters : debters})
+        //     .success(function(data) {
+        //         $location.url('/profile');
+        //      });
+        $scope.createBill(subject,amount, debters);
+        console.log("inBillModalInstanceCtrl");
         $modalInstance.close();
     }
 
-    $scope.deleteBill = function() {
-	    $http.post('/deleteBill', { bill: $scope.bill })
-	        .success(function(data) {
-                $modalInstance.close();
-	        })
-            .error(function (message) {
-                $scope.message = message;
-            });
+    $scope.deleteBillButton = function() {
+        $scope.deleteBill(bill);
+        $modalInstance.close();
     }
 
     $scope.updateBill = function(subject, amount) {
@@ -300,7 +328,7 @@ app.controller('BillModalInstanceCtrl', function($scope, $modalInstance, bill, $
     }
 
     function containsObject(obj, list) {
-       var i;
+        var i;
         for (i = 0; i < list.length; i++) {
             if (list[i].text === obj.text) {
                 return true;

@@ -37,8 +37,8 @@
     </div>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-danger" ng-show="!modifiable()" ng-click="deleteBill()">Delete Bill</button>
-    <button class="btn btn-warning" ng-show="!modifiable()" ng-click="edit()">Edit Bill</button>
+    <button class="btn btn-danger" ng-show="!modifiable() && !editBill" ng-click="deleteBillButton()">Delete Bill</button>
+    <button class="btn btn-warning" ng-show="!modifiable() && !editBill" ng-click="edit()">Edit Bill</button>
     <button class="btn btn-primary" ng-show="!editBill" ng-click="ok()">OK</button>
     <button class="btn btn-primary" ng-show="editBill" type="button" ng-click="updateBill(subject,amount)">Update Bill</button>
     <button class="btn btn-warning" ng-show="editBill" type="button" ng-click="cancel()">Cancel</button>
