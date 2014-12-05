@@ -1,9 +1,7 @@
-<!-------------------------------------
-	addFriend.html profile modal
---------------------------------------->
+<!-- addFriend.html profile modal -->
 
 
-<!--------------------------------- START modal-body --------------------------------------->
+<!-- START modal-body -->
 <script type="text/ng-template" id="customTemplate.html">
     <a>
         <span>{{match.label}}</span>
@@ -12,6 +10,7 @@
 </script>
 
 <div class="modal-body">	
+    <alert ng-if="message != null" type="{{message.type}}">{{message.text}}</alert>
     <h3>Add a friend</h3>
         <form name=search >
             <fieldset class="form-group">
@@ -34,14 +33,12 @@
 	<br>
 	
 </div>	
-<!--------------------------------- END modal-body --------------------------------------------->
+<!-- END modal-body -->
 
 
-<!------------------------ START modal-footer --------------------------->
+<!-- START modal-footer -->
 <div class="modal-footer">
-
     <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
-	
 </div>
-<!------------------------ END modal-footer ----------------------------->
+<!-- END modal-footer -->
 

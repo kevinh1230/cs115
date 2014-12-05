@@ -1,4 +1,5 @@
 <div id = "wrapper">
+    <alert ng-if="message != null" type="{{message.type}}" close="clearMessage()">{{message.text}}</alert>
     <div class="navbar-default sidebar" role="navigation">
         <div class="sidebar-nav navbar-collapse">
             <ul class="nav" id="side-menu">
@@ -86,7 +87,6 @@
 </br>
 </br>
 <hr>
-<alert ng-if="message != null" type="{{message.type}}" close="clearMessage()">{{message.text}}</alert>
 <div class="container">
     <div class="col-sm-6 jumbotron">
         <h3>Profile</h3>
