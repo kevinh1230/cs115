@@ -33,8 +33,7 @@ angular.module('BillsModalCtrl', []).controller('BillsModalController', function
 
     $scope.createBillButton = function(subject, ammount) {
         var success = $scope.createBill(subject, ammount, $scope.debterList);
-        if (success)
-            $modalInstance.close();
+        $modalInstance.close();
     }
     
 

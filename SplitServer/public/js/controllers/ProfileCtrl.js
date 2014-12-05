@@ -149,24 +149,6 @@ app.controller('ProfileController', function ($scope, $http, $location, $modal, 
         });
     }
 
-    $scope.createBill = function(subject, amount, debters){
-        //debterList = [];
-        console.log('create');
-        //console.log(debterList);
-        //var debters = debterList;
-        $http.post('/createbill', {subject : subject, amount : amount, debters : debters})
-            .success(function(response) {
-                console.log(response); 
-                    if (response) 
-                        $http.get('/getOwnedBills').success(function(bills){
-                            console.log(bills)
-                            $scope.ownedBills = bills
-                        });
-                console.log(response);
-         });
-    console.log("inprofctrl");
-    }
-
     $scope.deleteBill = function(bill) {
         $http.post('/deleteBill', { bill: bill })
             .success(function(response) {

@@ -15,14 +15,19 @@ angular.module('FriendsModalCtrl', []).controller('FriendsModalController', func
     }
 
     $scope.acceptFriend = function(friend) {
-        $http.put('/acceptFriend', {friend: friend})
-            .success(function(data) {
-                $scope.user = data.user;
-                $scope.message = data.message
-            })
-            .error(function(message) {
-                $scope.message = message;
-            });
+        $scope.acceptFriend(friend);
+        $http.get('/user').success(function(user) {
+            $scope.user = user;
+        });
+
+        //$http.put('/acceptFriend', {friend: friend})
+        //    .success(function(data) {
+        //        $scope.user = data.user;
+        //        $scope.message = data.message
+        //    })
+        //    .error(function(message) {
+        //        $scope.message = message;
+        //    });
     }
 
     $scope.addFriend = function(friend) {
