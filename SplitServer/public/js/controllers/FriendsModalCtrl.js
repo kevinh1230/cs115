@@ -14,7 +14,8 @@ angular.module('FriendsModalCtrl', []).controller('FriendsModalController', func
                 regex.test(obj.username);
     }
 
-    $scope.acceptFriend = function(friend) {
+    $scope.acceptFriendButton = function(friend) {
+        console.log("Accept");
         $scope.acceptFriend(friend);
         $http.get('/user').success(function(user) {
             $scope.user = user;

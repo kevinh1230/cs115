@@ -1,12 +1,15 @@
 var User = require('../app/models/User');
 var Bill = require('../app/models/Bill');
-
+var requester = require('request');
 var billQuery = [{ path: 'paid', select: 'username'},
 				 { path: 'unpaid', select: 'username'},
 				 { path: 'owner', select: 'username'},
                  { path: 'group.user', select: 'username firstName lastName' }];
 
 var async = require('async');
+var accountSid = 'ACc82a340f825c9497a289fa23cfb45687';
+var authToken = "6bb6791bad8fa0cc270184fd2762e7e2";
+var client = require('twilio')(accountSid, authToken);
 
 module.exports = function (app) {
     console.log('init');
