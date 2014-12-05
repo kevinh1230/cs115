@@ -19,12 +19,16 @@
         </div>
 
         <div>
-            <button type = "button" class="btn btn-default" ng-click = "setButton(1)">Even Split</button>
-            <button type = "button" class="btn btn-default" ng-click = "setButton(2)">Custom Split</button>
-
+            <div class="form-group">
+             <button type = "button" class="btn btn-default" ng-click = "setButton(1)">Even Split</button>
+              <button type = "button" class="btn btn-default" ng-click = "setButton(2)">Custom Split</button>
+                <lable ng-show="isSetButton(1) && debterList.length > 0">
+                    <input type = "checkbox" class="checkbox" ng-click = "includeSelfToggle()">Include Yourself?</label> 
+            </div>
             <div ng-if="isSetButton(1)" ng-repeat = "debter in debterList">
                 <label>{{debter.text}}:</label>
-                <label ng-if="debter.amount= ammount/debterList.length"> {{debter.amount|currency}}</label>
+                <label ng-if="!includeSelf && (debter.amount = ammount/debterList.length)"> {{debter.amount|currency}}</label>
+                <label ng-if="includeSelf && (debter.amount = ammount/(debterList.length + 1))"> {{debter.amount|currency}}</label>
             </div>
             <div ng-if="isSetButton(2)" ng-repeat = "debter in debterList">
                 <label >{{debter.text}}</label> 

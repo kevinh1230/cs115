@@ -1,4 +1,27 @@
 angular.module('BillsModalCtrl', []).controller('BillsModalController', function($scope, $modalInstance, bill, $http, $location, friends) {
+  $scope.includeSelf = false;
+
+  $scope.includeSelfToggle = function(){
+        if ($scope.includeSelf === false) {
+            console.log("including self");
+            $scope.includeSelf = true;
+            return $scope.includeSelf;
+        } else {
+            console.log("not including self");
+            $scope.includeSelf = false;
+            return $scope.includeSelf;
+        }
+    }
+
+    var activeButton = 1;
+
+    $scope.setButton = function(newButtonValue){
+        activeButton = newButtonValue;
+    };
+
+    $scope.isSetButton = function(buttonName){
+      return activeButton === buttonName;
+    };
 
     $scope.bill = bill;
 

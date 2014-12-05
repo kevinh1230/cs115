@@ -34,16 +34,6 @@ app.controller('ProfileController', function ($scope, $http, $location, $modal, 
         return tab === tabName;
     };
 
-    var activeButton = 1;
-
-    $scope.setButton = function(newButtonValue){
-        activeButton = newButtonValue;
-    };
-
-    $scope.isSetButton = function(buttonName){
-      return activeButton === buttonName;
-    };
-
     $http.get('/user').success(function(user) {
         $scope.user = user;
         if (!user.venmoAuthed) {
