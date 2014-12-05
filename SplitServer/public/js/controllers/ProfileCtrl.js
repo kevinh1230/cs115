@@ -149,24 +149,6 @@ app.controller('ProfileController', function ($scope, $http, $location, $modal, 
         });
     }
 
-    $scope.createBill = function(subject, amount, debters){
-        //debterList = [];
-        console.log('create');
-        //console.log(debterList);
-        //var debters = debterList;
-        $http.post('/createbill', {subject : subject, amount : amount, debters : debters})
-            .success(function(response) {
-                console.log(response); 
-                    if (response) 
-                        $http.get('/getOwnedBills').success(function(bills){
-                            console.log(bills)
-                            $scope.ownedBills = bills
-                        });
-                console.log(response);
-         });
-    console.log("inprofctrl");
-    }
-
     $scope.deleteBill = function(bill) {
         $http.post('/deleteBill', { bill: bill })
             .success(function(response) {
@@ -309,11 +291,11 @@ app.controller('BillModalInstanceCtrl', function($scope, $modalInstance, bill, $
     }
 
     $scope.createBillButton = function(subject, ammount) {
-        var success = $scope.createBill(subject, ammount, $scope.debterList);
-        if (success)
-            $modalInstance.close();
+        $scope.createBill(subject, ammount, $scope.debterList);
+        //if (success)
+        //    $modalInstance.close();
+        $modalInstance.close();
     }
-    
 
     $scope.deleteBillButton = function() {
         $scope.deleteBill(bill);
@@ -393,15 +375,22 @@ app.controller('UserModalInstanceCtrl', function($scope, $modalInstance, $http, 
                 regex.test(obj.username);
     }
 
-    $scope.acceptFriend = function(friend) {
-        $http.put('/acceptFriend', {friend: friend})
-            .success(function(data) {
-                $scope.user = data.user;
-                $scope.message = data.message
-            })
-            .error(function(message) {
-                $scope.message = message;
-            });
+    $scope.acceptFriendButton = function(friend) {
+        $scope.acceptFriend(friend);
+        $http.get('/user').success(function(user) {
+            $scope.user = user;
+        // console.log("acceptfriendbuttoninctrl");
+        // if (!user.venmoAuthed) {
+        //     var venmoAuthCode = $location.search();
+        //     $http.post('/accesstoken', {code: venmoAuthCode.code})
+        //     .success(function(data) {
+        //         $scope.message = data;
+        //     })
+        //     .error(function(message) {
+        //         $scope.message = message;
+        //     })
+        // }
+        });
     }
 
     $scope.addFriend = function(friend) {
