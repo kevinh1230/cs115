@@ -63,6 +63,9 @@
     padding-left: 52px;
 }
 
+.checkbox {
+    display : inline;
+}
 @media(min-width:768px) {
     .sidebar {
         z-index: 1;
