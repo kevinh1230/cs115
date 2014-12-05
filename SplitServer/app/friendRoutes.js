@@ -4,9 +4,9 @@ var query    = [{ path: 'friends', select: 'username' },
                 { path: 'requests', select: 'username' },
                 { path: 'requested', select: 'username' }];
 
-module.exports = function () {
+module.exports = function (app) {
     // Friend List REST API
-    router.put('/acceptFriend', function (request, response) {
+    app.put('/acceptFriend', function (request, response) {
         User.findOne(request.body.friend, function (error, friend) {
             if (error) {
                 console.log(error);
@@ -38,7 +38,7 @@ module.exports = function () {
         });
     });
 
-    router.post('/addFriend', function (request, response) {
+    app.post('/addFriend', function (request, response) {
         User.findOne(request.body.friend, function (error, friend) {
             if (error) {
                 console.log(error);
@@ -78,7 +78,7 @@ module.exports = function () {
         });
     });
 
-    router.delete('/deleteFriend/:friend', function (request, response) {
+    app.delete('/deleteFriend/:friend', function (request, response) {
         User.findOne({
             username: request.params.friend
         }, function (error, friend) {
@@ -119,6 +119,4 @@ module.exports = function () {
             });
         });
     });
-
-    return router;
 }

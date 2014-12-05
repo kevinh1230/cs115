@@ -35,8 +35,9 @@ app.use(passport.session());
 
 require('./config/passport')(passport);
 require('./app/routes.js')(app,passport);
-app.use('/', require('./app/friendRoutes.js')());
 
+require('./app/friendRoutes.js')(app);
+require('./app/billsRoutes.js')(app);
 
 // start app ===============================================
 app.listen(port);	
