@@ -34,13 +34,13 @@ app.controller('ProfileController', function ($scope, $http, $location, $modal, 
       return $scope.tab === tabName;
     };
 
-    this.activeButton = 1;
+    $scope.activeButton = 1;
 
-    this.setButton = function(newButtonValue){
+    $scope.setButton = function(newButtonValue){
       this.activeButton = newButtonValue;
     };
 
-    this.isSetButton = function(buttonName){
+    $scope.isSetButton = function(buttonName){
       return this.activeButton === buttonName;
     };
 
@@ -387,10 +387,9 @@ $scope.verifyTag = function(tag) {
 app.controller('UserModalInstanceCtrl', function($scope, $modalInstance, user, $http, $location) {
     $scope.user = user;
 
-    $http.get('/getUsers', { params: { search: "Jesse" } })
+    $http.get('/getUsers')
         .success(function(users) { 
             $scope.users = users;
-            console.log(users)
         });
     
     $scope.searchFilter = function (obj) {

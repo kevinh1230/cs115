@@ -18,15 +18,15 @@
             </tags-input>
         </div>
 
-        <div ng-controller = "ProfileController as button">
-            <button type = "button" class="btn btn-default" ng-click = "button.setButton(1)">Even Split</button>
-            <button type = "button" class="btn btn-default" ng-click = "button.setButton(2)">Custom Split</button>
+        <div>
+            <button type = "button" class="btn btn-default" ng-click = "setButton(1)">Even Split</button>
+            <button type = "button" class="btn btn-default" ng-click = "setButton(2)">Custom Split</button>
 
-            <div ng-if="button.isSetButton(1)" ng-repeat = "debter in debterList">
+            <div ng-if="isSetButton(1)" ng-repeat = "debter in debterList">
                 <label>{{debter.text}}:</label>
                 <label ng-if="debter.amount= ammount/debterList.length"> {{debter.amount|currency}}</label>
             </div>
-            <div ng-if="button.isSetButton(2)" ng-repeat = "debter in debterList">
+            <div ng-if="isSetButton(2)" ng-repeat = "debter in debterList">
                 <label >{{debter.text}}</label> 
                 <input type="text" ng-model="debter.amount" ng-init = "debter.amount = null" />
             </div>
