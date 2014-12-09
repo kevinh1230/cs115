@@ -1,4 +1,9 @@
 var User = require('../app/models/User');
+var requester = require('request');
+
+var accountSid = 'ACc82a340f825c9497a289fa23cfb45687';
+var authToken = "6bb6791bad8fa0cc270184fd2762e7e2";
+var client = require('twilio')(accountSid, authToken);
 
 var query = [{ path: 'friends', select: 'username' }, 
 			 { path: 'requests', select: 'username' },
