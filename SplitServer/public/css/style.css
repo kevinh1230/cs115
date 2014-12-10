@@ -12,9 +12,6 @@
     position: static;
 }
 
-.bill {
-    color:white;
-}
 
 .bill-to-pay:hover {
     color:#FF6262;

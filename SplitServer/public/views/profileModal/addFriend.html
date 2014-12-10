@@ -16,13 +16,13 @@
             <fieldset class="form-group">
                 <input class="form-control" name="input" type="text" placeholder="Find a Friend" ng-model="searchUser" typeahead="user as user.firstName + ' ' + user.lastName  for user in users | filter:searchFilter" typeahead-template-url="customTemplate.html" required/>
             </fieldset>
-            <button class="btn btn-primary"  ng-disabled="!searchUser" ng-click="addFriend(searchUser)">Add</button>
+            <button class="btn btn-primary"  name="add" ng-disabled="!searchUser" ng-click="addFriend(searchUser)">Add</button>
         </form>
     <hr>
 	
 	<h3>Friend requests</h3>
 		<div ng-repeat="friend in user.requests">
-			<label>{{friend.username}}   <button ng-click="acceptFriendButton(friend)">accept</button></label>		</div>
+			<label>{{friend.username}}   <button name="accept" ng-click="acceptFriendButton(friend)">accept</button></label>		</div>
 	
 	<hr>
 	
