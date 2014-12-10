@@ -2,8 +2,8 @@ var assert = require('assert');
 var should = require('should');
 var request = require('supertest');
 var mongoose = require('mongoose');
-var db = require('./config/db');
-var User = require('./app/models/User');
+var db = require('../../config/db');
+var User = require('../../app/models/User');
 
 describe('SPLIT Test', function() {
     var url = 'http://localhost:8080';
