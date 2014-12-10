@@ -5,9 +5,8 @@
             <ul class="nav" id="side-menu">
                 <!-- <li> -->
                     <label>Welcome {{user.firstName}} {{user.lastName}}!</label><br/>
-                    <button class="btn btn-default" ng-click="openAddFriend()" ng-show="user.requests.length == 1">{{user.friends.length}} Friends ({{user.requests.length}} new request)</button>
-            <button class="btn btn-default" ng-click="openAddFriend()" ng-hide="user.requests.length == 1">{{user.friends.length}} Friends ({{user.requests.length}} new requests)</button> 
-                    <button class="btn-default btn" ng-click="logout()">Logout</button>
+                    <button class="btn btn-default" name="friends" ng-click="openAddFriend()">{{user.friends.length}} Friends ({{user.requests.length}} new request)</button>
+                    <button class="btn-default btn" name="logout" ng-click="logout()">Logout</button>
                 <!-- </li> -->
                 <!-- <li>
                     <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Charts<span class="fa arrow"></span></a>
