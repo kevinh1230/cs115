@@ -25,11 +25,22 @@ angular.module('BillsModalCtrl', []).controller('BillsModalController', function
 
     $scope.bill = bill;
 
+    $scope.checkPaid = function() {
+        for (var user in $scope.bill.group) {
+            if ($scope.bill.group[user].user._id == $scope.user._id && $scope.bill.group[user].paid == true){
+                return true;
+            } else {
+                return false
+            }
+        }
+    };
+
     $scope.modifiable = function() {
         return bill.group.some( function(e) {
             return e.paid;
         });
     }
+
 
     $http.get('/auth').success(function(data) {
         if(data == false)

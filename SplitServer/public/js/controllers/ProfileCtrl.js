@@ -1,6 +1,6 @@
 var app = angular.module('ProfileCtrl', ['ngTagsInput', 'FriendsModalCtrl', 'BillsModalCtrl']).service('friends', function($http, $q) { 
     var friends = [];
-            
+
     this.load = function() {
 
         $http.get('/user').success(function(user) {
@@ -24,6 +24,11 @@ var app = angular.module('ProfileCtrl', ['ngTagsInput', 'FriendsModalCtrl', 'Bil
 })
 app.controller('ProfileController', function ($scope, $http, $location, $modal, $log) {
 
+        $scope.cityImage = {
+        'background-image': 'url(../city.jpg)'
+    };
+
+    console.log($scope.cityImage); 
     var tab = 1;
 
     $scope.setTab = function(newValue){
@@ -231,6 +236,16 @@ app.controller('ProfileController', function ($scope, $http, $location, $modal, 
             $log.info('Modal dismissed at: ' + new Date());
         });
     };
+
+    $scope.isPaid = function(bill) {
+        for (var user in bill.group) {
+            if (bill.group[user].paid === false) {
+                console.log(bill);
+                return false;
+            }
+        }
+        return true;
+    }
 
     $scope.openAddFriend = function() {
 

@@ -1,12 +1,12 @@
-<div class="container" id = "wrapper">
+<div id = "wrapper">
     <alert ng-if="message != null" type="{{message.type}}" close="clearMessage()">{{message.text}}</alert>
     <div class="navbar-default sidebar" role="navigation">
         <div class="sidebar-nav navbar-collapse">
             <ul class="nav" id="side-menu">
                 <!-- <li> -->
-                    <label>{{user.firstName}} {{user.lastName}}</label><br/>
-                    <label>My Friends:</label>
-                    <label ng-repeat="friend in user.friends"> {{friend.username}}&nbsp;</label><br/>
+                    <label>Welcome {{user.firstName}} {{user.lastName}}!</label><br/>
+                    <button class="btn btn-default" ng-click="openAddFriend()" ng-show="user.requests.length == 1">{{user.friends.length}} Friends ({{user.requests.length}} new request)</button>
+            <button class="btn btn-default" ng-click="openAddFriend()" ng-hide="user.requests.length == 1">{{user.friends.length}} Friends ({{user.requests.length}} new requests)</button> 
                     <button class="btn-default btn" ng-click="logout()">Logout</button>
                 <!-- </li> -->
                 <!-- <li>
@@ -16,40 +16,29 @@
         </div>
     </div>
 
-    <div id = "page-wrapper">
-        <!-- Friend list -->
-        <div class = "floatright">
-            <button class="btn btn-default" ng-click="openAddFriend()" ng-show="user.requests.length == 1">Friends ({{user.requests.length}} new request)</button>
-            <button class="btn btn-default" ng-click="openAddFriend()" ng-hide="user.requests.length == 1">Friends ({{user.requests.length}} new requests)</button>
-        </div> 
-        
-        <!-- Create Bills -->
-        <div class = "floatright">
-            <button class="btn btn-default" ng-click="openCreateBill()">Create Bill</button>
-        </div>
+    <div id="page-wrapper">
 
         <!-- View Bills -->
-        <section class="tab">
+        <section class="tab col-sm-10">
             <ul class="nav nav-pills">
                 <li ng-class="{ active: isSet(1) }">
-                    <a href ng-click="setTab(1)">Bills to pay</a>
+                    <a class="menuTab" href ng-click="setTab(1)">Bills to pay</a>
                 </li>
                 <li ng-class="{ active: isSet(2) }">
-                    <a href ng-click="setTab(2)">Bills I created</a>
+                    <a class="menuTab" href ng-click="setTab(2)">Bills I created</a>
                 </li>
                 <li ng-class="{ active: isSet(3) }">
-                    <a href ng-click="setTab(3)">Bills I paid</a>
+                    <a class="menuTab" href ng-click="setTab(3)">Bills I paid</a>
                 </li>
             </ul>
             <!-- Bills Charged -->
             <div ng-show="isSet(1)">
                 <blockquote>
-                    <div ng-repeat="bill in chargedBills">
+                    <div class="billList" ng-repeat="bill in chargedBills">
                         <!-- <a href ng-click="openPayBill(bill)" ng-show="checkUnpaid(user,bill)">
                             <label>{{bill.subject}} - {{bill.amount | currency}}</label>
                         </a> -->
-
-                        <a ng-repeat = "friend in bill.group" href ng-click="openPayBill(bill)" ng-show="checkUnpaid(user,bill)">
+                        <a ng-repeat = "friend in bill.group" href class="bill bill-to-pay" ng-click="openPayBill(bill)" ng-show="checkUnpaid(user,bill)">
                             <label ng-show = "user.username == friend.user.username">{{bill.subject}} - {{friend.amount | currency}}  </label>
                         </a>
                     </div>
@@ -58,9 +47,10 @@
             <!-- Bills Created -->
             <div ng-show="isSet(2)">
                 <blockquote>
-                    <div ng-repeat="bill in ownedBills">
-                        <a href ng-click="openOwnedBill(bill)">
-                            <label>{{bill.subject}} - {{bill.amount | currency}}</label>
+                    <div class="billList" ng-repeat="bill in ownedBills">
+                        <a href class="bill bill-created" ng-click="openOwnedBill(bill)">
+                            <label class="inProgress" ng-if="!isPaid(bill)">{{bill.subject}} - {{bill.amount | currency}} (In Progress)</label>
+                            <label class="complete" ng-if="isPaid(bill)">{{bill.subject}} - {{bill.amount | currency}} (Complete)</label>
                         </a>
                     </div>
                 </blockquote>
@@ -68,12 +58,12 @@
             <!-- Bills Paid -->
             <div ng-show="isSet(3)">
                 <blockquote>
-                    <div ng-repeat="bill in chargedBills">
+                    <div class="billList" ng-repeat="bill in chargedBills">
                         <!-- <a href ng-click="openPaidBill(bill)" ng-hide="checkUnpaid(user,bill)">
                             <label>{{bill.subject}} - {{bill.amount | currency}}</label>
                         </a> -->
 
-                        <a ng-repeat = "friend in bill.group" href ng-click="openPayBill(bill)" ng-hide="checkUnpaid(user,bill)">
+                        <a ng-repeat = "friend in bill.group" href class="bill bill-paid" ng-click="openPayBill(bill)" ng-hide="checkUnpaid(user,bill)">
                             <label ng-show = "user.username == friend.user.username">{{bill.subject}} - {{friend.amount | currency}}  </label>
                         </a>
 
@@ -81,12 +71,16 @@
                 </blockquote>
             </div>
         </section>
+
+        <!-- Friend list -->
+
+        <div class="col-sm-1">
+        <!-- Create Bills -->
+            <button class="btn btn-default" ng-click="openCreateBill()">Create Bill</button>
+        </div>
     </div>
 </div>
-</br>
-</br>
-</br>
-<hr>
+
 <!--
 <div class="container">
     <div class="col-sm-6 jumbotron">

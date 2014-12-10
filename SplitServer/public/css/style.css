@@ -2,28 +2,69 @@
 	float: right;
 }
 
+.menuTab {
+    color:white;
+}
+.jumbotron {
+    background-color: transparent;
+}
+.container {
+    position: static;
+}
+
+.bill {
+    color:white;
+}
+
+.bill-to-pay:hover {
+    color:#FF6262;
+}
+
+.bill-created:hover {
+    color:#FFFF66;
+}
+
+.inProgress:hover {
+    color:#FF6262;
+}
+
+.complete:hover {
+    color:#94EE94;
+}
+
+.bill-paid:hover {
+    color:#94EE94;
+}
+
+.billList {
+        overflow-x:hidden;
+    overflow-y:scroll;
+}
 #wrapper {
     width: 100%;
 }
 
 #page-wrapper {
     padding: 0 15px;
-    min-height: 568px;
-    background-color: #fff;
+    min-height: 70%;
+    background-color: transparent;
+    overflow-x:hidden;
+    overflow-y:auto;
 }
 
 @media(min-width:768px) {
     #page-wrapper {
         position: inherit;
-        margin: 0 0 0 250px;
+        margin: 0 0 0 200px;
         padding: 0 30px;
-        border-left: 1px solid #e7e7e7;
+        border-left: 1px solid #000;    
     }
 }
 
 .sidebar .sidebar-nav.navbar-collapse {
     padding-right: 0;
     padding-left: 0;
+
 }
 
 .sidebar .sidebar-search {
@@ -48,6 +89,7 @@
 
 .sidebar .active>a>.fa.arrow:before {
     content: "\f107";
+
 }
 
 .sidebar .nav-second-level li,
@@ -70,13 +112,14 @@
     .sidebar {
         z-index: 1;
         position: absolute;
-        width: 250px;
-        background-color:white;
+        width: 200px;
+        background-color: transparent;
+        color:white;
     }
 
     .navbar-top-links .dropdown-messages,
     .navbar-top-links .dropdown-tasks,
     .navbar-top-links .dropdown-alerts {
-        margin-left: auto;
+        margin-left: auto;;
     }
 }
